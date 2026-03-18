@@ -1,6 +1,6 @@
 # Análisis del Sistema SAIS: Arquitectura, Componentes y Guía de Ejecución
 
-## 📋 Resumen Ejecutivo
+## Resumen
 
 **SAIS** (Sistema de Inteligencia de Actividad Quirúrgica) es un sistema de aprendizaje profundo que decodifica videos quirúrgicos para identificar automáticamente y analizar la actividad quirúrgica intraoperatoria. Aprovecha Transformadores de Visión (ViT) con aprendizaje contrastivo supervisado para analizar videos de cirugías robóticas y proporcionar información sobre:
 
@@ -13,7 +13,7 @@ El sistema se generaliza entre videos, cirujanos, hospitales y procedimientos qu
 
 ---
 
-## 🏗️ Arquitectura del Sistema
+## Arquitectura del Sistema
 
 ### Flujo de Datos de Alto Nivel
 
@@ -80,7 +80,7 @@ El sistema se generaliza entre videos, cirujanos, hospitales y procedimientos qu
 
 ---
 
-## 🔧 Descripción de Componentes
+## Descripción de Componentes
 
 ### 1. **Componentes de Preprocesamiento de Video**
 
@@ -192,7 +192,7 @@ El sistema se generaliza entre videos, cirujanos, hospitales y procedimientos qu
 
 ---
 
-## 📊 Diagrama de Flujo de Datos
+## Diagrama de Flujo de Datos
 
 ```
 Video Quirúrgico (.mp4)
@@ -270,7 +270,7 @@ Video Quirúrgico (.mp4)
 
 ---
 
-## 🚀 Guía de Compilación y Ejecución
+## Guía de Compilación y Ejecución
 
 ### Requisitos Previos
 
@@ -320,7 +320,7 @@ pip install -e .
 
 ### Paso 2: Modificar Módulo Transformador de PyTorch
 
-⚠️ **Paso Crítico**: SAIS requiere salidas de mapa de atención que no están disponibles en PyTorch 1.8.0 estándar
+**Paso Crítico**: SAIS requiere salidas de mapa de atención que no están disponibles en PyTorch 1.8.0 estándar
 
 ```bash
 # Navegar a su entorno conda
@@ -577,7 +577,7 @@ SAIS/
 
 ---
 
-## 📈 Consideraciones de Desempeño
+## Consideraciones de Desempeño
 
 | Operación | Memoria GPU | Tiempo Est. | Notas |
 |-----------|-----------|----------|-------|
@@ -588,7 +588,7 @@ SAIS/
 
 ---
 
-## 🔍 Parámetros de Configuración Clave
+## Parámetros de Configuración Clave
 
 | Parámetro | Predeterminado | Rango | Impacto |
 |-----------|---------|-------|--------|
@@ -601,7 +601,7 @@ SAIS/
 
 ---
 
-## 🐛 Problemas Comunes y Soluciones
+## Problemas Comunes y Soluciones
 
 | Problema | Causa | Solución |
 |-------|-------|----------|
@@ -614,7 +614,7 @@ SAIS/
 
 ---
 
-## 📚 Gráfico de Dependencias de Componentes
+## Gráfico de Dependencias de Componentes
 
 ```
 run_experiments.py (Orquestador)
@@ -638,7 +638,7 @@ run_experiments.py (Orquestador)
 
 ---
 
-## 📖 Referencias
+## Referencias
 
 - **Artículo**: ["A Vision Transformer for Decoding Surgery" - Nature Biomedical Engineering](https://www.nature.com/articles/s41551-023-01010-8)
 - **DINO**: [Facebook Research - Emerging Properties in Self-Supervised ViTs](https://github.com/facebookresearch/dino)
@@ -647,6 +647,6 @@ run_experiments.py (Orquestador)
 
 ---
 
-## 📝 Licencia
+## Licencia
 
 CC BY-NC 4.0 - Ver archivo LICENSE para detalles

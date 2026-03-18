@@ -1,22 +1,22 @@
 # Guía de Referencia Rápida de SAIS
 
-## 🎯 ¿Qué es SAIS?
+## ¿Qué es SAIS?
 
-**SAIS** = Sistema de Inteligencia de Actividad Quirúrgica
+**SAIS** = Sistema Quirúrgico IA (Surgical AI System)
 
 Un sistema de aprendizaje profundo que analiza videos quirúrgicos para identificar automáticamente:
-- ✂️ Pasos quirúrgicos (fases de la operación)
-- 🤚 Gestos quirúrgicos (movimientos manuales específicos)
-- ⭐ Habilidad quirúrgica (calidad de las acciones)
-- 👁️ Importancia del fotograma (qué fotogramas del video importan más)
+- Pasos quirúrgicos (fases de la operación)
+- Gestos quirúrgicos (movimientos manuales específicos)
+- Habilidad quirúrgica (calidad de las acciones)
+- Importancia del fotograma (qué fotogramas del video importan más)
 
 **Tecnología**: Transformador de Visión (ViT) + Aprendizaje Contrastivo Supervisado
 
-**Artículo Clave**: [Nature Biomedical Engineering - 2023](https://www.nature.com/articles/s41551-023-01010-8)
+**Artículo Principal**: [Nature Biomedical Engineering - 2023](https://www.nature.com/articles/s41551-023-01010-8)
 
 ---
 
-## ⚡ Inicio Rápido (5 Comandos)
+## Inicio Rápido (5 Comandos)
 
 ```bash
 # 1. Clonar y configurar
@@ -47,7 +47,7 @@ bash ./main.sh -f su_video
 
 ---
 
-## 📂 Estructura de Archivos
+## Estructura de Archivos
 
 ```
 SAIS/
@@ -104,7 +104,7 @@ PREDICCIONES: Tipo de gesto, confianza, importancia del fotograma
 
 ---
 
-## 🛠️ Parámetros de Configuración Clave
+## Parámetros de Configuración Clave
 
 | Parámetro | Qué hace | Valor Típico |
 |-----------|----------|-------------|
@@ -120,7 +120,7 @@ PREDICCIONES: Tipo de gesto, confianza, importancia del fotograma
 
 ---
 
-## 📊 Relaciones entre Componentes
+## Relaciones entre Componentes
 
 ```
                     ORQUESTADOR
@@ -142,7 +142,7 @@ PREDICCIONES: Tipo de gesto, confianza, importancia del fotograma
 
 ---
 
-## 🎬 Flujos de Trabajo Comunes
+## Flujos de Trabajo Comunes
 
 ### Flujo de Trabajo 1: Analizar Nuevo Video Quirúrgico (Solo Inferencia)
 
@@ -208,7 +208,7 @@ cat ptlflow_logs/log_run.txt
 
 ---
 
-## ⚙️ Stack Técnico
+## Stack Técnico
 
 | Componente | Tecnología | Propósito |
 |-----------|-----------|---------|
@@ -222,7 +222,7 @@ cat ptlflow_logs/log_run.txt
 
 ---
 
-## 🔧 Solución de Problemas
+## Solución de Problemas
 
 | Problema | Causa | Solución |
 |---------|-------|-----|
@@ -235,7 +235,7 @@ cat ptlflow_logs/log_run.txt
 
 ---
 
-## 💡 Información Clave
+## Información Clave
 
 1. **Pre-entrenamiento es Crítico**: Las características de DINO están pre-entrenadas en ImageNet. Este aprendizaje transferido es lo que hace funcionar SAIS.
 
@@ -249,7 +249,7 @@ cat ptlflow_logs/log_run.txt
 
 ---
 
-## 📝 Interpretación de Salida
+## Interpretación de Salida
 
 **Ejemplo de Salida de Predicción** (formato CSV):
 
@@ -266,7 +266,7 @@ surgery_001,3,100,149,suturing,0.95,"[0.05, 0.15, 0.92, 0.88, 0.91]"
 
 ---
 
-## 🎓 Recursos de Aprendizaje
+## Recursos de Aprendizaje
 
 - **[Artículo Original de SAIS](https://www.nature.com/articles/s41551-023-01010-8)** - Detalles técnicos completos
 - **[Transformadores de Visión (ViT)](https://arxiv.org/abs/2010.11929)** - Arquitectura central
@@ -276,7 +276,7 @@ surgery_001,3,100,149,suturing,0.95,"[0.05, 0.15, 0.92, 0.88, 0.91]"
 
 ---
 
-## 📞 Soporte y Problemas
+## Soporte y Problemas
 
 - **GitHub**: [danikiyasseh/SAIS](https://github.com/danikiyasseh/SAIS)
 - **Citación**: Ver README del repositorio para referencia BibTeX
@@ -284,7 +284,7 @@ surgery_001,3,100,149,suturing,0.95,"[0.05, 0.15, 0.92, 0.88, 0.91]"
 
 ---
 
-## 🚀 Consejos para el Éxito
+## Consejos para el Éxito
 
 1. **GPU de Buena Calidad es Esencial**: Necesita al menos 8 GB VRAM para extracción de características
 2. **Preprocesar Videos**: Asegurar tasas de fotogramas consistentes (20 FPS típico en videos quirúrgicos)
