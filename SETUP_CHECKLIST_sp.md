@@ -1,6 +1,6 @@
 # Lista de Verificación de Configuración Local de SAIS y Guía Práctica
 
-## ✅ Verificación Previa a la Configuración
+## Verificación Previa a la Configuración
 
 Antes de comenzar, verifique que tiene:
 
@@ -12,7 +12,7 @@ Antes de comenzar, verifique que tiene:
 
 ---
 
-## 🔧 Instalación Paso a Paso
+## Instalación Paso a Paso
 
 ### Fase 1: Configuración del Entorno (30 min)
 
@@ -74,7 +74,7 @@ python -c "import torch; print(f'CUDA disponible: {torch.cuda.is_available()}');
 
 ---
 
-### Fase 2: Modificación del Transformador de PyTorch (20 min) ⚠️ CRÍTICO
+### Fase 2: Modificación del Transformador de PyTorch (20 min) CRÍTICO
 
 #### 2.1 Ubicar transformer.py
 
@@ -377,7 +377,7 @@ head -20 SAIS/predictions/video_predictions.csv
 
 ---
 
-## 🏋️ Fase 8: Entrenar en Conjunto de Datos Personalizado (Opcional - 2+ horas)
+## Fase 8: Entrenar en Conjunto de Datos Personalizado (Opcional - 2+ horas)
 
 ### 8.1 Preparar Datos de Entrenamiento
 
@@ -456,7 +456,7 @@ bash ./SAIS/main.sh -f nuevo_video
 
 ---
 
-## 📋 Lista de Verificación de Verificación
+## Lista de Verificación de Verificación
 
 Después de completar todas las fases, verifique:
 
@@ -472,7 +472,7 @@ Después de completar todas las fases, verifique:
 
 ---
 
-## 🚀 Ejecutar Inferencia en Nuevos Videos (Plantilla de Repetición)
+## Ejecutar Inferencia en Nuevos Videos (Plantilla de Repetición)
 
 Una vez completada configuración, ejecutar en nuevos videos es simple:
 
@@ -490,7 +490,7 @@ cat SAIS/predictions/nuevo_video_quirurgico_predictions.csv
 
 ---
 
-## 🐛 Solución de Problemas Durante Configuración
+## Solución de Problemas Durante Configuración
 
 ### Problema: `ModuleNotFoundError: torch`
 
@@ -543,7 +543,7 @@ chmod +x SAIS/main.sh
 
 ---
 
-## 📊 Monitoreo de Recursos del Sistema
+## Monitoreo de Recursos del Sistema
 
 ### Monitorear Durante Procesamiento
 
@@ -578,7 +578,7 @@ watch -n 1 free -h
 
 ---
 
-## ✨ Indicadores de Éxito
+## Indicadores de Éxito
 
 Después de ejecutar `bash main.sh`:
 

@@ -1,14 +1,14 @@
 # Índice de Documentación del Sistema SAIS
 
-## 📚 Descripción General de Documentación
+## Descripción General de Documentación
 
 Esta carpeta contiene análisis comprehensivo del código base de SAIS (Sistema de Inteligencia de Actividad Quirúrgica), incluyendo arquitectura, componentes y guías de implementación.
 
 ---
 
-## 📖 Guía de Documentos
+## Guía de Documentos
 
-### 1. **QUICK_REFERENCE_sp.md** ⭐ COMIENCE AQUÍ
+### 1. **QUICK_REFERENCE_sp.md** COMIENZAR AQUÍ
 - **Mejor para**: Comenzar rápidamente, entender qué hace SAIS de un vistazo
 - **Contiene**: 
   - Resumen ejecutivo (lectura de 30 seg)
@@ -30,7 +30,7 @@ Esta carpeta contiene análisis comprehensivo del código base de SAIS (Sistema 
 - **Importante**: Modificación crítica del transformador de PyTorch (Fase 2)
 - **Siguiente paso**: Seguir sistemáticamente para la configuración
 
-### 3. **SYSTEM_ANALYSIS_sp.md** 🏗️ ARQUITECTURA COMPLETA
+### 3. **SYSTEM_ANALYSIS_sp.md** ARQUITECTURA COMPLETA
 - **Mejor para**: Comprensión profunda del diseño del sistema y componentes
 - **Contiene**:
   - Resumen ejecutivo
@@ -52,7 +52,7 @@ Esta carpeta contiene análisis comprehensivo del código base de SAIS (Sistema 
 
 ---
 
-## 🎯 Ruta de Lectura Recomendada
+## Ruta de Lectura Recomendada
 
 ### Ruta A: Quiero Ejecutar SAIS en Mi Video (Más Rápido)
 1. Comience: **QUICK_REFERENCE_sp.md** → Sección "Inicio Rápido"
@@ -82,7 +82,7 @@ Esta carpeta contiene análisis comprehensivo del código base de SAIS (Sistema 
 
 ---
 
-## 📊 Guías Visuales
+## Guías Visuales
 
 Tres diagramas Mermaid están incluidos en **SYSTEM_ANALYSIS_sp.md**:
 
@@ -117,7 +117,7 @@ Tres diagramas Mermaid están incluidos en **SYSTEM_ANALYSIS_sp.md**:
 
 ---
 
-## 🔄 Resumen del Flujo de Datos
+## Resumen del Flujo de Datos
 
 ```
 Entrada de Video
@@ -139,7 +139,7 @@ Fotogramas
 
 ---
 
-## ⚙️ Pasos Críticos de Configuración
+## Pasos Críticos de Configuración
 
 1. **Instalar dependencias** (SETUP_CHECKLIST_sp.md § Fase 1)
    ```bash
@@ -147,7 +147,7 @@ Fotogramas
    pip install -r requirements.txt
    ```
 
-2. **Modificar transformador de PyTorch** ⚠️ (SETUP_CHECKLIST_sp.md § Fase 2)
+2. **Modificar transformador de PyTorch**  (SETUP_CHECKLIST_sp.md § Fase 2)
    - Requerido para extracción de mapa de atención
    - Editar: torch/nn/modules/transformer.py
    - Líneas: 181 y 294
@@ -162,7 +162,7 @@ Fotogramas
 
 ---
 
-## 🚀 Comandos de Ejecución
+## Comandos de Ejecución
 
 ### Mínimo (Ejecutar Inferencia)
 ```bash
@@ -186,7 +186,7 @@ python ./SAIS/scripts/process_inference_results.py -p ./SAIS/
 
 ---
 
-## 📁 Estructura del Repositorio
+## Estructura del Repositorio
 
 ```
 SAIS/
@@ -226,7 +226,7 @@ SAIS/
 
 ---
 
-## 🎓 Recursos de Aprendizaje
+## Recursos de Aprendizaje
 
 ### Teoría
 - **Artículo Original**: [SAIS - Nature Biomedical Engineering](https://www.nature.com/articles/s41551-023-01010-8)
@@ -241,7 +241,7 @@ SAIS/
 
 ---
 
-## 🐛 Enlaces Rápidos de Problemas Comunes
+## Enlaces Rápidos de Problemas Comunes
 
 | Problema | Documento | Sección |
 |-------|----------|---------|
@@ -254,7 +254,7 @@ SAIS/
 
 ---
 
-## ✅ Listas de Verificación de Validación
+## Listas de Verificación de Validación
 
 ### Después de la Instalación
 - [ ] Entorno Conda creado y activado
@@ -278,7 +278,7 @@ SAIS/
 
 ---
 
-## 📞 Obtener Ayuda
+## Obtener Ayuda
 
 1. **Profundidad**: Verifique SYSTEM_ANALYSIS_sp.md § 8 (Problemas Comunes y Soluciones)
 2. **Corrección rápida**: Verifique QUICK_REFERENCE_sp.md § Solución de Problemas
@@ -288,7 +288,7 @@ SAIS/
 
 ---
 
-## 📝 Mantenimiento de Documentación
+## Mantenimiento de Documentación
 
 **Última Actualización**: 2024
 **Versión de Documentación**: 1.0
@@ -301,19 +301,19 @@ Si encuentra errores de documentación o tiene mejoras:
 
 ---
 
-## 🎯 Navegación Rápida
+## Navegación Rápida
 
 **Quiero...**
-- ✅ Comenzar inmediatamente → **QUICK_REFERENCE_sp.md**
-- ✅ Configurar en mi máquina → **SETUP_CHECKLIST_sp.md**
-- ✅ Entender la arquitectura → **SYSTEM_ANALYSIS_sp.md**
-- ✅ Encontrar un componente específico → Use tabla de contenido en cada documento
-- ✅ Depurar un problema → Busque el problema en secciones "Solución de Problemas"
-- ✅ Aprender qué hace cada archivo → **Descripción de Componentes** en SYSTEM_ANALYSIS_sp.md
+- Comenzar inmediatamente → **QUICK_REFERENCE_sp.md**
+- Configurar en mi máquina → **SETUP_CHECKLIST_sp.md**
+- Entender la arquitectura → **SYSTEM_ANALYSIS_sp.md**
+- Encontrar un componente específico → Use tabla de contenido en cada documento
+- Depurar un problema → Busque el problema en secciones "Solución de Problemas"
+- Aprender qué hace cada archivo → **Descripción de Componentes** en SYSTEM_ANALYSIS_sp.md
 
 ---
 
-## 📊 Estadísticas de Documentos
+## Estadísticas de Documentos
 
 | Documento | Longitud | Tiempo de Lectura | Mejor Para |
 |----------|---------|--------------|----------|
@@ -324,4 +324,3 @@ Si encuentra errores de documentación o tiene mejoras:
 
 ---
 
-**¡Feliz análisis de videos quirúrgicos! 🎥🔬**
