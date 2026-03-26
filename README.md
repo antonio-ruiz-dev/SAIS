@@ -47,6 +47,51 @@ This is an overview of the initial repo layout. Note that the `videos` folder is
 - On line 181, add `attn` as a second output of (a) the `mod` function and (b) the `forward` method
 - On line 294, remove the `[0]` indexing and add `attn` as a second output of the (a) function and (b) the `forward` method
 
+The actual changes were made to:
+- TransformerEncoderLayer
+```
+def _sa_block(
+    self,
+    x: Tensor,
+    attn_mask: Optional[Tensor],
+    key_padding_mask: Optional[Tensor],
+    is_causal: bool = False,
+) -> Tensor:
+    x, attn = self.self_attn(
+        x,
+        x,
+        x,
+        attn_mask=attn_mask,
+        key_padding_mask=key_padding_mask,
+        need_weights=True,       # <-- change False to True
+        is_causal=is_causal,
+    )                            # <-- remove [0]
+    return self.dropout1(x), attn
+```
+- TransformerEncoder.forward loop
+```
+for mod in self.layers:
+    output, attn = mod(
+        output,
+        src_mask=mask,
+        is_causal=is_causal,
+        src_key_padding_mask=src_key_padding_mask_for_layers,
+    )
+...
+return output, attn
+```
+- One extra thing: Since `_sa_block` now returns a tuple `(x, attn)`, you also need to update the two places in `TransformerEncoderLayer.forward` that call `_sa_block`:
+```
+# norm_first branch:
+x_sa, attn = self._sa_block(self.norm1(x), src_mask, src_key_padding_mask, is_causal=is_causal)
+x = x + x_sa
+
+# non-norm_first branch:
+x_sa, attn = self._sa_block(x, src_mask, src_key_padding_mask, is_causal=is_causal)
+x = self.norm1(x + x_sa)
+```
+
+
 ### 2. Downloading parameters of feature extractor
 We extract features from surgical videos using [DINO](https://github.com/facebookresearch/dino/tree/main), a vision transformer pre-trained on natural images in a self-supervised manner. This requires downloading the pre-trained parameters from the original repo. Alternatively, you can download the parameters directly from this [link](https://dl.fbaipublicfiles.com/dino/dino_deitsmall16_pretrain/dino_deitsmall16_pretrain.pth).
 
