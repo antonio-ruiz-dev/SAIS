@@ -34,7 +34,8 @@ conda create -n SAIS python=3.9.7 -y
 conda activate SAIS
 
 # Verificar activación (debería mostrar prefijo (SAIS) en terminal)
-which python
+which python  (Mac, linux)
+where python  (Windows)
 # La salida debería contener: .../envs/SAIS/...
 ```
 
@@ -70,8 +71,30 @@ python -c "import torch; print(f'CUDA disponible: {torch.cuda.is_available()}');
 # Ejemplo de salida:
 # CUDA disponible: True
 # Número de dispositivos: 1
-```
 
+# Si la salida es CUDA available: False
+# Device count: 0
+# Checar la versión instalada de  CUDA
+nvidia-smi # <-- este comando retorna el driver instalado para la tarjeta de video. Puede, en general ser mas reciente que el kit de CUDA
+nvcc --version
+
+# Este proyecto requiere CUDA 11.1.1 si es mayor se necesita hacer downgrade. Al lfinal se quedó con cuda 12.0 porque hace uso completo de la tarjeta en uso nVidia GeForce RTX 4060
+
+
+# Si no está instalado CUDA, install
+#Verify CUDA_PATH
+
+# Si no está instalada, arreglar con conda
+conda install pytorch torchvision torchaudio pytorch-cuda=12.0 -c pytorch -c nvidia
+# Si aun no registra CUDA, el problema es la version de torch que no tiene soporte para CUDA
+# para cuda 12.6 instalar ptorch 12.6
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
+
+python -c "import torch; print(f'CUDA disponible: {torch.cuda.is_available()}'); print(f'Número de dispositivos: {torch.cuda.device_count()}')"
+CUDA disponible: True
+Número de dispositivos: 1
+
+```
 ---
 
 ### Fase 2: Modificación del Transformador de PyTorch (20 min) CRÍTICO
@@ -80,7 +103,14 @@ python -c "import torch; print(f'CUDA disponible: {torch.cuda.is_available()}');
 
 ```bash
 # Encontrar su entorno conda
+# Mac or linux
 conda info -a | grep "active environment"
+# Windows
+conda info -a | findstr "active environment"
+    active environment : SAIS_397
+    active env location : C:\Users\User\anaconda3\envs\SAIS_397
+    base environment : C:\Users\User\anaconda3  (writable)
+
 
 # Navegar al módulo transformador
 # Ejemplo Windows:
@@ -319,6 +349,9 @@ with torch.no_grad():
 # Prueba con 1 GPU
 python -m torch.distributed.launch --nproc_per_node=1 \
   -c "print('✓ Lanzamiento distribuido funciona')"
+
+# torch.distributed.launch is deprecated may stop working in nest releases. Use torchrun instead.
+torchrun --nproc_per_node=1 -m .\SAIS\test_distributed_launch.py
 ```
 
 ---
@@ -379,22 +412,23 @@ head -20 SAIS/predictions/video_predictions.csv
 
 ## Fase 8: Entrenar en Conjunto de Datos Personalizado (Opcional - 2+ horas)
 
-### 8.1 Preparar Datos de Entrenamiento
+### 8.1 Preparar Datos de Entrenamiento 
 
 ```bash
 # Estructura:
 SAIS/
-├── annotations/
-│   └── train_annotations.csv
+├── SurgicalPaths/
+│   └── JIGSAWS_Suturing_gestures_timestamps.csv
 ├── videos/
 │   ├── surgery_001.mp4
 │   ├── surgery_002.mp4
 │   └── ...
+
 ```
 
 ### 8.2 Crear CSV de Anotaciones
 
-**Formato** (train_annotations.csv):
+**Formato** JIGSAWS (JIGSAWS_Suturing_gestures_timestamps.csv) No está verificado donde este formato está definido:
 ```csv
 video_name,frame_number,gesture_label,surgeon_id
 surgery_001,0,rest,surgeon_a
@@ -403,6 +437,17 @@ surgery_001,25,knot_tying,surgeon_a
 surgery_001,50,tissue_grasping,surgeon_a
 surgery_001,75,suturing,surgeon_a
 surgery_002,0,rest,surgeon_b
+
+#more likely this is the most correct format specified in prepare_dataset.py
+id,Path,Gesture,Subject,SuperTrial,StartFrame,EndFrame
+1,SAIS\videos\Knot_Tying_B001.mp4,G12,Subject02,Trial001,45,85
+2,SAIS\videos\Knot_Tying_B001.mp4,G13,Subject02,Trial001,86,185
+3,SAIS\videos\Knot_Tying_B001.mp4,G13,Subject02,Trial001,186,291
+4,SAIS\videos\Knot_Tying_B001.mp4,G14,Subject02,Trial001,292,369
+
+**FORMATO** Custom Videos (Custom_Paths.csv)
+ 
+
 ...
 ```
 

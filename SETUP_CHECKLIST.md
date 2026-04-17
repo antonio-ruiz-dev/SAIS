@@ -33,10 +33,26 @@ conda create -n SAIS python=3.9.7 -y
 # Activate environment
 conda activate SAIS
 
+# conda create -n sais_env python=3.12
+#
+# To activate this environment, use
+#
+#     $ conda activate sais_env
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
+
+
 # Verify activation (should show (SAIS) prefix in terminal)
 which python
+
+# Windows
+where python
+
 # Output should contain: .../envs/SAIS/...
 ```
+
 
 #### 1.3 Install Dependencies
 ```bash
@@ -44,7 +60,10 @@ which python
 pip install -r requirements.txt
 
 # Verify key packages installed
+(MacOS)
 pip list | grep -E "torch|torchvision|opencv|h5py|ptlflow|timm"
+(Windows)
+pip list | findstr /R "torch torchvision opencv h5py ptlflow timm"
 
 # Expected output should show:
 # torch                    1.8.0
@@ -65,11 +84,35 @@ python -c "import SAIS; print('SAIS package installed successfully')"
 
 #### 1.5 Verify PyTorch CUDA Support
 ```bash
-python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}'); print(f'Device count: {torch.cuda.device_count()}')"
+python -c "import os; os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE';import torch; print(f'CUDA available: {torch.cuda.is_available()}'); print(f'Device count: {torch.cuda.device_count()}')"
 
 # Output example:
 # CUDA available: True
 # Device count: 1
+
+# if Output is CUDA available: False
+# Device count: 0
+# Check Your installed CUDA Version
+nvidia-smi
+
+# If not installed, fix using conda
+conda install pytorch torchvision torchaudio pytorch-cuda=12.0 -c pytorch -c nvidia
+
+# Si no está instalado CUDA, install
+#Verify CUDA_PATH
+
+# If not installed, fix with conda
+conda install pytorch torchvision torchaudio pytorch-cuda=12.0 -c pytorch -c nvidia
+# Si aun no registra CUDA, el problema es la version de torch que no tiene soporte para CUDA
+
+# para cuda 12.6 instalar ptorch 12.6
+pip install torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 --index-url https://download.pytorch.org/whl/cu121
+
+# Verify again pytorch CUDA support
+python -c "import torch; print(f'CUDA disponible: {torch.cuda.is_available()}'); print(f'Número de dispositivos: {torch.cuda.device_count()}')"
+CUDA disponible: True
+Número de dispositivos: 1
+
 ```
 
 ---
@@ -250,7 +293,8 @@ ls -lh SAIS/videos/
 ffprobe -v error -select_streams v:0 \
   -show_entries stream=width,height,r_frame_rate,duration \
   -of default=noprint_wrappers=1:nokey=1:noescapes=1 \
-  SAIS/videos/video.mp4
+  SAIS/videos/Suturing_B002_capture1.mp4
+
 ```
 
 ---
@@ -319,6 +363,10 @@ with torch.no_grad():
 # Test with 1 GPU
 python -m torch.distributed.launch --nproc_per_node=1 \
   -c "print('✓ Distributed launch works')"
+
+# apparently torch.distribute.launch is deprecated. Documentation says to use torchrun
+torchrun --nproc_per_node=1 SAIS\test_distributed_launch.py
+
 ```
 
 ---
@@ -394,7 +442,7 @@ SAIS/
 
 ### 8.2 Create Annotations CSV
 
-**Format** (train_annotations.csv):
+**Format** (train_annotations.csv) Not verified where this format is defined:
 ```csv
 video_name,frame_number,gesture_label,surgeon_id
 surgery_001,0,rest,surgeon_a
@@ -407,6 +455,7 @@ surgery_002,0,rest,surgeon_b
 ```
 
 ### 8.3 Extract Features for All Videos
+
 
 ```bash
 # Process each video (can parallelize)
@@ -440,6 +489,30 @@ python -m torch.distributed.launch --nproc_per_node=1 \
   -e 50 \
   -f 5 \
   -tf 1.0
+
+# with torch.distributed.launch being deprecated since version 1.9 the new command woud be
+torchrun --nproc_per_node=1 \
+  SAIS/scripts/run_experiments.py \
+  -p ./SAIS/ \
+  -data Custom_Gestures \
+  -d Custom \
+  -m ViT \
+  -enc ViT_SelfSupervised_ImageNet \
+  -t Prototypes \
+  -mod RGB-Flow \
+  -dim 384 \
+  -bs 8 \
+  -lr 0.1 \
+  -nc 10 \
+  -bc \
+  -sa \
+  -domains gesture_classification \
+  -ph train_val_test \
+  -dt reps \
+  -e 50 \
+  -f 5 \
+  -tf 1.0
+  
 
 # Monitor training log
 tail -f ptlflow_logs/log_run.txt

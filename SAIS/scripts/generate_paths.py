@@ -7,13 +7,14 @@ import time
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-f','--videoname',type=str)
+parser.add_argument('-f','--videoname',nargs='*',type=str)
 parser.add_argument('-p','--path',type=str)
 args = parser.parse_args()
 
 starttime = time.time()
 
 dataset = 'Custom'
+# dataset = 'JIGSAWS'
 savepath = os.path.join(args.path,'paths') # project directory
 if not os.path.exists(savepath):
     os.mkdir(savepath) 
@@ -22,9 +23,15 @@ if not os.path.exists(savepath):
 search_path = os.path.join(args.path,'images') # path to the images directory
 load_path = 'images'
 df = pd.DataFrame(columns=['path','category','label'])
-#cases = sorted(os.listdir(path)) # assuming all videos 
-videoname = args.videoname # sequence_X_X...
-cases = [videoname] # assuming one video at a time
+# If --videoname is provided, use that list; otherwise use all video folders in images.
+if args.videoname:
+    cases = args.videoname
+else:
+    cases = sorted(
+        case for case in os.listdir(search_path)
+        if os.path.isdir(os.path.join(search_path, case))
+    )
+print(f'Generating paths for {len(cases)} video(s)...')
 for case in tqdm(cases):
     casepath = os.path.join(search_path,case)
     files = sorted(os.listdir(casepath))
@@ -45,7 +52,7 @@ for case in tqdm(cases):
     casepath = os.path.join(search_path,case)
     files = sorted(os.listdir(casepath))
     indices = np.arange(0,len(files)-jump_frames,jump_frames)
-    files = list(itemgetter(*indices)(files))
+    files = [files[idx] for idx in indices]
     filepaths = list(map(lambda file:os.path.join(load_path,case,file),files))
 
     frames = list(map(lambda file:int(file.split('_')[-1].strip('.jpg')),files))

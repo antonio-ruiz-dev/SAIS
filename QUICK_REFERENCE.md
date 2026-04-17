@@ -1,14 +1,14 @@
 # SAIS Quick Reference Guide
 
-## 🎯 What is SAIS?
+## What is SAIS?
 
-**SAIS** = Surgical Activity Intelligence System
+**SAIS** = Surgical Artificial Intelligence System
 
 A deep learning system that analyzes surgical videos to automatically identify:
-- ✂️ Surgical steps (phases of the operation)
-- 🤚 Surgical gestures (specific hand movements)
-- ⭐ Surgical skill (quality of actions)
-- 👁️ Frame importance (which video frames matter most)
+- Surgical steps (phases of the operation)
+- Surgical gestures (specific hand movements)
+- Surgical skill (quality of actions)
+- Frame importance (which video frames matter most)
 
 **Technology**: Vision Transformer (ViT) + Supervised Contrastive Learning
 
@@ -16,7 +16,7 @@ A deep learning system that analyzes surgical videos to automatically identify:
 
 ---
 
-## ⚡ Quick Start (5 Commands)
+## Quick Start (5 Commands)
 
 ```bash
 # 1. Clone & setup
@@ -47,7 +47,7 @@ bash ./main.sh -f your_video
 
 ---
 
-## 📂 File Structure
+## File Structure
 
 ```
 SAIS/
@@ -78,7 +78,7 @@ SAIS/
 
 ---
 
-## 🔄 Data Flow Pipeline
+## Data Flow Pipeline
 
 ```
 Surgical Video (MP4)
@@ -120,13 +120,13 @@ PREDICTIONS: Gesture type, confidence, frame importance
 
 ---
 
-## 📊 Component Relationships
+## Component Relationships
 
 ```
                     ORCHESTRATOR
                    run_experiments.py
-                    /   |   |   \
-                   /    |   |    \
+                    /   |    |       \
+                   /    |    |        \
           [MODEL]  [DATASET] [TRAINING] [INFERENCE]
             /           |         |        \
            /            |         |         \

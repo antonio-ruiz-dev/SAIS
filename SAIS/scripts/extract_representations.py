@@ -226,7 +226,7 @@ def obtain_flow(model,inputs):
     for prediction,aux,sample in zip(predictions['flows'],predictions[key2],inputs['images']):
         prediction, sample = prediction.unsqueeze(0), sample.unsqueeze(0)
         #print(prediction.shape,sample.shape)
-        io_adapter = IOAdapter(model, sample.shape[-2:], cuda=torch.cuda.is_available()) #images[0].shape[:2])
+        io_adapter = IOAdapter(model.module if hasattr(model, 'module') else model, sample.shape[-2:], cuda=torch.cuda.is_available()) #images[0].shape[:2])
         prediction = {'flows':prediction,key2:aux}
         # Remove extra padding that may have been added to the inputs
         prediction = io_adapter.unpad_and_unscale(prediction)
@@ -270,11 +270,12 @@ def extractFlows(rank,world_size,dataset_list,pid,jump_size,args):
     #model.to(rank)
     #model = DDP(model, device_ids=[rank], find_unused_parameters=True)
     """ Data Parallel Stuff """
-    # device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-    device = torch.device('cpu')
-    # print('Lets use',torch.cuda.device_count(),'GPUs!')
-    # model = nn.DataParallel(model)
-    # model.to(device)
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    #device = torch.device('cpu')
+    print('Lets use', torch.cuda.device_count(), 'GPUs!')
+    if torch.cuda.device_count() > 1:
+        model = nn.DataParallel(model)
+    model.to(device)
     """ End """
     model.eval()
     reps_list = []
@@ -471,6 +472,7 @@ if __name__ == '__main__':
     
     if args.optical_flow == True: #to generate optical flow images
         list_of_datasets = args.data_list #['NS'] #['Glenda_v1.0','LapGyn4_v1.2','Nephrec9','SurgicalActions160']
+        print(f'Datasets to Extract Flows From: {list_of_datasets}')
         for dataset_name in list_of_datasets:
             dataset_list = [dataset_name]
             assert dataset_name in ['Custom','NS','VUA','NS_Gronau','VUA_Gronau','RAPN','VUA_COH','VUA_HMH','VUA_Lab','JIGSAWS_Suturing','DVC_UCL']

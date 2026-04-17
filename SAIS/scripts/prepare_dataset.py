@@ -1603,7 +1603,7 @@ class VideoDataset(Dataset):
                     df = df[df['Video'].isin(videos_to_keep)]
 
                     """ Multi-Class Classification """
-                    gestures = ['G2', 'G3', 'G6', 'G4', 'G8', 'G11', 'G5', 'G1', 'G9', 'G10'] # removed G10 b/c not enough samples
+                    gestures = ['G1','G2', 'G3', 'G6', 'G4', 'G8', 'G11', 'G5', 'G1', 'G9', 'G10'] # removed G10 b/c not enough samples
                     df = df[df['Gesture'].isin(gestures)]
                     split = 'User' #options: User | SuperTrial
 
