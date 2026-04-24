@@ -1,0 +1,10 @@
+python -m torch.distributed.launch --nproc_per_node=1 SAIS/scripts/run_experiments.py -p ./SAIS/ -data JIGSAWS_Suturing_Gestures_Classification -d JIGSAWS_Suturing -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 8 -lr 0.1 -nc 10 -bc -sa -domains gesture_classification -ph train val test -dt reps -e 50 -f 8 -tf 1.0
+-- Custom
+python -m torch.distributed.launch --nproc_per_node=1 SAIS/scripts/run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom_Gestures -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 8 -lr 0.1 -nc 10 -bc -sa -domains Custom -ph train val test -dt reps -e 50 -f 8 -tf 1.0
+
+ 
+-- First successfull training:
+ 
+python SAIS/scripts/run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom_Gestures -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 8 -lr 0.1 -nc 10 -bc -sa -domains Custom -ph train val test -dt reps -e 50 -f 8 -tf 1.0
+
+Inference

@@ -156,6 +156,10 @@ PREDICTIONS: Gesture type, confidence, frame importance
 cp your_surgical_video.mp4 SAIS/videos/
 bash SAIS/main.sh -f your_surgical_video
 
+# This is windows, ran in powershell command:
+wsl.exe --cd . bash {script_path} -f {video_name}
+
+Running: ffmpeg -y -i SAIS\videos\Suturing_I005.mp4 SAIS\images\Suturing_I005\frames_%8d.jpg
 # Results:
 # Check: SAIS/predictions/
 # Contains: gesture labels, confidence scores, frame importance
@@ -173,6 +177,12 @@ bash SAIS/main.sh -f your_surgical_video
 bash SAIS/main.sh -f video_1
 bash SAIS/main.sh -f video_2
 # ... repeat for all videos
+# or run python script
+ python SAIS/scripts/extract_representations.py --arch vit_small --patch_size 16 --model_type ViT_SelfSupervised_ImageNet --batch_size_per_gpu 2 --data_path ./SAIS/ --data_list JIGSAWS_Suturing --save_type h5 --optical_flow
+
+#if moviepy and torch-catter appear, pip install the adecuate version of torch+CUDA version 
+# moviepy==1.0.3 in this case and  
+# pip install torch-scatter -f https://data.pyg.org/whl/torch-2.5.1+cu118.html
 
 # 3. Train model:
 python -m torch.distributed.launch \

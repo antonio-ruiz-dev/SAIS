@@ -5,6 +5,8 @@ import numpy as np
 import time
 import argparse
 
+from SAIS.scripts import prepare_dataset
+
 parser = argparse.ArgumentParser()
 parser.add_argument('-f','--videoname',nargs='*',type=str)
 parser.add_argument('-p','--path',type=str)
@@ -12,8 +14,43 @@ args = parser.parse_args()
 
 starttime = time.time()
 
-# dataset = 'Custom'
-dataset = 'JIGSAWS'
+dataset = 'Custom'
+# Other possible dataset vlues: 
+# Outside this script, there are two main official value sets depending on entrypoint:
+
+# Values accepted by run_experiments (argument -data / --dataset_name):
+# "VUA_EASE"
+# "VUA_EASE_Stitch"
+# "NS_DART"
+# "NS_Gestures_Classification"
+# "VUA_Gestures_Classification"
+# "DVC_UCL_Gestures_Classification"
+# "JIGSAWS_Suturing_Gestures_Classification"
+# "NS_vs_VUA"
+# "CinVivo_OutView"
+# "Custom_Gestures"
+# Source: run_experiments.py:21
+#
+# Values enforced in extract_representations for optical-flow extraction (assert dataset_name in ...):
+# "Custom"
+# "NS"
+# "VUA"
+# "NS_Gronau"
+# "VUA_Gronau"
+# "RAPN"
+# "VUA_COH"
+# "VUA_HMH"
+# "VUA_Lab"
+# "JIGSAWS_Suturing"
+# "DVC_UCL"
+# Source: extract_representations.py:478
+#
+# Also present internally in dataset handling logic (not all exposed as CLI choices):
+#
+# "SOCAL"
+# "NS_Gestures_Recommendation"
+# Source: prepare_dataset.py:1748, prepare_dataset.py:1770
+
 savepath = os.path.join(args.path,'paths') # project directory
 if not os.path.exists(savepath):
     os.mkdir(savepath) 
@@ -72,7 +109,7 @@ for case in tqdm(cases):
 
     frames = list(map(lambda file:int(file.split('_')[-1].strip('.jpg')),files))
     next_frames = list(map(lambda frame:frame + jump_frames,frames))
-    next_files = list(map(lambda frame:'frames_' + '0'*(8-len(str(frame))) + str(frame) + '.jpg',next_frames))
+    next_files = list(map(lambda frame:f'frame_{int(frame):08d}.jpg',next_frames))
     next_filepaths = list(map(lambda file:os.path.join(load_path,case,file),next_files))
 
     curr_df = pd.DataFrame(filepaths,columns=['path1'])
@@ -84,8 +121,8 @@ for case in tqdm(cases):
 df.to_csv(os.path.join(savepath,'%s_FlowPaths.csv' % dataset))
 
 df = pd.read_csv(os.path.join(savepath,'%s_FlowPaths.csv' % dataset),index_col=0)
-df['nflow'] = df[['path1','label']].apply(lambda row:int(row['path1'].split('frames_')[-1].strip('.jpg')) // jump_frames, axis=1)
-df['flowpath'] = df[['path1','label','nflow']].apply(lambda row:os.path.join('flows',row['label'],'flows_' + '0'*(8-len(str(row['nflow']))) + str(row['nflow']) + '.jpg'),axis=1)
+df['nflow'] = df[['path1','label']].apply(lambda row:int(row['path1'].split('frame_')[-1].strip('.jpg')) // jump_frames, axis=1)
+df['flowpath'] = df[['path1','label','nflow']].apply(lambda row:os.path.join('flows',row['label'],f'flows_{int(row["nflow"]):08d}.jpg'),axis=1)
 df.drop(labels=['nflow'],axis=1,inplace=True)
 
 df.to_csv(os.path.join(savepath,'%s_FlowPaths.csv' % dataset))

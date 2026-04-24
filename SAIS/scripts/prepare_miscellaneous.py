@@ -37,12 +37,15 @@ def calcNCELoss(rank,snip_sequence,labels,videoname,gesture_prototypes,domains):
     cols = np.argmax(p_labels == s_labels,1)
     rows = list(range(len(cols)))
     nums = sim_exp[rows,cols] # nbatch
+    print('In calcCELoss -> Numerators: %s' % nums)
     #dens = torch.sum(sim_exp,1) # nbatch 
     #if len(np.unique(domains)) > 1: # multi-task setting (only consider subset of prototypes)
     #    dens = torch.stack([torch.sum(sim_exp[i,[0,1]]) if domain == 'NH_02' else torch.sum(sim_exp[i,[2,3]]) for i,domain in enumerate(domains)])
     #else:
     dens = torch.sum(sim_exp,1) # nbatch 
+    print('In calcCELoss -> Denominators: %s' % dens)
     loss = -torch.mean(torch.log(nums/dens)) # scalar
+    print('In calcCELoss -> Loss: %s' % loss)
     return loss
 
 def calcImportanceLoss(output_importances,importances,ipad,labels):
@@ -74,12 +77,13 @@ def calcLoss(output_logits,labels,nclasses,future_reps,snip_reps,include_ss_loss
         #print(output_logits.shape,labels.shape)
         criterion = nn.CrossEntropyLoss()
         loss = criterion(output_logits,labels)
-        #print(loss)
+        print(loss)
         if include_ss_loss == True:
                 ss_loss = calcSSLoss(future_reps,snip_reps)
                 loss += ss_loss
                 loss = loss / 2
         
+
         return loss
 
 def calcSSLoss(future_reps,snip_reps):
@@ -96,17 +100,23 @@ def calcSSLoss(future_reps,snip_reps):
 
 def calcNCEMetrics(rank,snip_sequence_list,labels_list,videoname_list,gesture_prototypes):
     labels = torch.stack(labels_list)
+    print(f'Calculating NCE Metrics for {len(labels)} samples...')
     videoname = videoname_list
+    print('Calculating prototype similarities...for videos: %s' % videoname)
 
     """ Prtotype-Specific Stuff """
     p = torch.vstack(list(gesture_prototypes.values())) # nprototypes x D
     norm = torch.norm(p,dim=1).unsqueeze(1).repeat(1,p.shape[1])
+    print('Prototype norms: %s' % norm)
+    print('Prototype representations: %s' % p)
     p_norm = p / norm
+    print('Normalized prototype representations: %s' % p_norm)
     # if torch.cuda.is_available():
     #     p_norm = p_norm.to(rank)
     # else:
     p_norm = p_norm.to('cpu')
     p_labels = list(gesture_prototypes.keys())
+    print('Gesture prototypes: %s' % p_labels)
 
     def getProbs(snip_sequence,labels,videoname,p_norm,p_labels):
 
@@ -118,11 +128,17 @@ def calcNCEMetrics(rank,snip_sequence_list,labels_list,videoname_list,gesture_pr
         sim_exp = torch.exp(sim)
         sides = list(map(lambda video:video.split('_')[-1],videoname))
         labels = list(map(lambda label:str(label.cpu().detach().numpy().item()),labels))
+
         s_labels = list(map(lambda tup:tup[1],zip(sides,labels))) #e.g. 0L, 2R, etc
+        print('Video sides + labels: %s' % s_labels)
         s_labels = np.repeat(np.expand_dims(np.array(s_labels),1),p.shape[0],axis=1) # nbatch x nprototypes
-        #print(p_labels,s_labels)
+        print('side labels repeated across prototypes: %s' % s_labels)
+        print(p_labels,s_labels)
         labels = torch.tensor(np.argmax(p_labels == s_labels,1))
+        print('Prototype labels: %s' % p_labels)
+        print('Side + label matches with prototypes: %s' % (p_labels == s_labels))      
         probs = sim_exp / torch.sum(sim_exp,1).unsqueeze(1).repeat(1,sim_exp.shape[1]) # nbatch x nprototype
+        print('Prototype probabilities: %s' % probs)
         return probs, labels
     
     if isinstance(snip_sequence_list,tuple):
@@ -147,8 +163,8 @@ def calcNCEMetrics(rank,snip_sequence_list,labels_list,videoname_list,gesture_pr
     labels,probs = labels.cpu().detach().numpy(), probs.cpu().detach().numpy()
     preds = preds.numpy()
     #print(labels,preds)
-    prec = precision_score(labels,preds,average='macro')
-    rec = recall_score(labels,preds,average='macro')
+    prec = precision_score(labels,preds,average='macro', zero_division=0)
+    rec = recall_score(labels,preds,average='macro', zero_division=0)
     nclasses = len(gesture_prototypes)
     if nclasses == 2:
         probs = probs[:,-1]
@@ -186,8 +202,8 @@ def calcMetrics(output_logits_list,labels_list,nclasses):
         
         preds = preds.cpu().detach().numpy()
         labels, output_probs = labels.cpu().detach().numpy(),output_probs.cpu().detach().numpy()
-        prec = precision_score(labels,preds,average='macro')
-        rec = recall_score(labels,preds,average='macro')
+        prec = precision_score(labels,preds,average='macro', zero_division=0)
+        rec = recall_score(labels,preds,average='macro', zero_division=0)
         #if nclasses == 2:
         #    output_probs = output_probs[:,-1]
             
@@ -246,5 +262,6 @@ def calcTemporalCoherenceAcc(output_logits_list,output_logits_flipped_list):
         countB = torch.sum(predsB == labelsB)
         acc = (countA + countB ) / (predsA.shape[0] + predsB.shape[0]) 
         return acc
+
 
 

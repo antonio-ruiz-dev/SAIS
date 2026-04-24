@@ -1624,6 +1624,16 @@ class VideoDataset(Dataset):
                     self.hf_rgb = hf_rgb
                     self.hf_of = hf_of
                 elif self.dataset_name in ['Custom_Gestures']:
+                    def balance_gestures(df):
+                        gestures = df['Gesture'].unique().tolist()
+                        min_class_amount = df['Gesture'].value_counts().min()
+                        balanced_df = pd.DataFrame()
+                        for gesture in gestures:
+                            curr_df = df[df['Gesture'] == gesture].sample(n=min_class_amount,replace=False,random_state=1)
+                            balanced_df = pd.concat((balanced_df,curr_df),axis=0)
+                        df = balanced_df.copy()
+                        return df
+
                     def balance_scores(df,maj_labels):
                         """ Balance Classes """
                         min_class_amount = df['maj'].value_counts().min()
@@ -1698,6 +1708,65 @@ class VideoDataset(Dataset):
                         cols = ['Video','Path','File','Sample']
                         new_samples[cols] = df[cols]
                         return new_samples
+
+                    def get_custom_annotations_path():
+                        candidate_paths = [
+                            os.path.join(self.root_path,'annotations','Custom_Gestures.csv'),
+                            os.path.join(self.root_path,'annotations','custom_gestures.csv'),
+                            os.path.join(self.root_path,'annotations','Custom_Gestures_Annotations.csv'),
+                            os.path.join(self.root_path,'annotations','custom_gestures_annotations.csv'),
+                        ]
+                        for candidate_path in candidate_paths:
+                            if os.path.exists(candidate_path):
+                                return candidate_path
+                        raise FileNotFoundError('Custom_Gestures training requires an annotation CSV in annotations/. Expected one of: %s' % ', '.join(candidate_paths))
+
+                    def obtain_train_val_test_split(df,balance=True):
+                        train_df = pd.DataFrame()
+                        val_df = pd.DataFrame()
+                        test_df = pd.DataFrame()
+                        for gesture in sorted(df['Gesture'].unique().tolist()):
+                            curr_df = df[df['Gesture'] == gesture]
+                            vids = curr_df['Video'].unique().tolist()
+                            if len(vids) < 3:
+                                print('Skipping Custom_Gestures class %s with fewer than 3 videos: %i videos' % (gesture, len(vids)))
+                                continue
+
+                            random.seed(fold)
+                            ntrain = max(1,int(0.7 * len(vids)))
+                            train_vids = random.sample(vids,ntrain)
+                            remaining_vids = list(set(vids) - set(train_vids))
+                            if not remaining_vids:
+                                remaining_vids = train_vids[-1:]
+                                train_vids = train_vids[:-1]
+
+                            nval = max(1,int(0.5 * len(remaining_vids)))
+                            nval = min(nval,len(remaining_vids))
+                            val_vids = random.sample(remaining_vids,nval)
+                            test_vids = list(set(vids) - set(train_vids) - set(val_vids))
+                            if not test_vids:
+                                test_vids = val_vids[-1:]
+                                val_vids = val_vids[:-1]
+
+                            curr_train_df = curr_df[curr_df['Video'].isin(train_vids)]
+                            curr_val_df = curr_df[curr_df['Video'].isin(val_vids)]
+                            curr_test_df = curr_df[curr_df['Video'].isin(test_vids)]
+                            train_df = pd.concat((train_df,curr_train_df),axis=0)
+                            val_df = pd.concat((val_df,curr_val_df),axis=0)
+                            test_df = pd.concat((test_df,curr_test_df),axis=0)
+
+                        if train_df.empty or val_df.empty or test_df.empty:
+                            raise ValueError('No valid train/val/test split could be built for Custom_Gestures after filtering sparse gesture classes. Ensure each retained gesture has annotations from at least 3 videos.')
+
+                        if balance == True:
+                            train_df = balance_gestures(train_df)
+                            val_df = balance_gestures(val_df)
+                            test_df = balance_gestures(test_df)
+                        else:
+                            val_df = balance_gestures(val_df)
+                            test_df = balance_gestures(test_df)
+
+                        return train_df, val_df, test_df
                     
                     hf_rgb = h5py.File(os.path.join(self.root_path,'results','%s_RepsAndLabels.h5' % encoder_params),'r')
                     hf_of = h5py.File(os.path.join(self.root_path,'results','ViT_SelfSupervised_ImageNet_FlowRepsAndLabels.h5'),'r')
@@ -1726,6 +1795,48 @@ class VideoDataset(Dataset):
                         df = inference_df.copy()
                         print(df.shape)
                         data = {'Custom_inference':df}
+                    else:
+                        annotation_path = get_custom_annotations_path()
+                        df = pd.read_csv(annotation_path,index_col=0)
+                        required_columns = {'Video','Gesture','StartFrame','EndFrame'}
+                        missing_columns = required_columns - set(df.columns)
+                        if missing_columns:
+                            raise ValueError('Custom_Gestures annotation CSV is missing required columns: %s' % sorted(missing_columns))
+
+                        df['Video'] = df['Video'].astype(str)
+                        df['Gesture'] = df['Gesture'].astype(str).str.strip()
+                        df['StartFrame'] = df['StartFrame'].astype(int)
+                        df['EndFrame'] = df['EndFrame'].astype(int)
+
+                        videos_to_keep = set(hf_rgb.keys()).intersection(set(hf_of.keys()))
+                        df = df[df['Video'].isin(videos_to_keep)]
+                        if df.empty:
+                            raise ValueError('Custom_Gestures annotations do not match any extracted representations in results/. Ensure annotation Video names match the H5 keys.')
+
+                        # Keep only gestures that can support train/val/test by video split.
+                        gesture_video_counts = df.groupby('Gesture')['Video'].nunique().sort_values(ascending=False)
+                        valid_gestures = gesture_video_counts[gesture_video_counts >= 3].index.tolist()
+                        dropped_gestures = gesture_video_counts[gesture_video_counts < 3]
+                        if not dropped_gestures.empty:
+                            dropped_msg = ', '.join(['%s (%i videos)' % (gesture, nvids) for gesture, nvids in dropped_gestures.items()])
+                            print('Skipping Custom_Gestures classes with fewer than 3 videos: %s' % dropped_msg)
+                        df = df[df['Gesture'].isin(valid_gestures)]
+
+                        # Respect requested class count by keeping the most frequent gestures.
+                        if self.nclasses is not None and self.nclasses > 0:
+                            class_counts = df['Gesture'].value_counts()
+                            if len(class_counts) > self.nclasses:
+                                selected_gestures = class_counts.head(self.nclasses).index.tolist()
+                                print('Limiting Custom_Gestures to top %i classes by sample count: %s' % (self.nclasses, selected_gestures))
+                                df = df[df['Gesture'].isin(selected_gestures)]
+
+                        if df.empty:
+                            raise ValueError('No Custom_Gestures classes remain after filtering. Verify annotations and extracted representations.')
+
+                        self.label_encoder = label_encoder.fit(sorted(df['Gesture'].unique().tolist()))
+                        df['Domain'] = self.domain
+                        train_data, val_data, test_data = obtain_train_val_test_split(df,balance=balance)
+                        data = {'train':train_data,'val':val_data,'test':test_data,'train+val':pd.concat((train_data,val_data),axis=0)}
 
                     self.data = data
                     self.hf_rgb = hf_rgb

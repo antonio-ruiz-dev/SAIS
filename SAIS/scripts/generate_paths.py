@@ -14,7 +14,9 @@ args = parser.parse_args()
 starttime = time.time()
 
 dataset = 'Custom'
-# dataset = 'JIGSAWS'
+# Other possible datasets: 'VUA_EASE', 'VUA_EASE_Stitch', 'NS_DART', 'NS_Gestures_Classification', 'VUA_Gestures_Classification', 'DVC_UCL_Gestures_Classification', 'JIGSAWS_Suturing_Gestures_Classification', 'NS_vs_VUA', 'CinVivo_OutView' 
+# NS, VUA, NS_Gronau, VUA_Gronau, RAPN, VUA_COH, VUA_HMH, VUA_Lab, JIGSAWS_Suturing, DVC_UCL in extract_representations.py:478
+# task-level names like VUA_EASE, NS_DART, Custom_Gestures, etc. in run_experiments.py:21
 savepath = os.path.join(args.path,'paths') # project directory
 if not os.path.exists(savepath):
     os.mkdir(savepath) 
@@ -35,6 +37,7 @@ print(f'Generating paths for {len(cases)} video(s)...')
 for case in tqdm(cases):
     casepath = os.path.join(search_path,case)
     files = sorted(os.listdir(casepath))
+    print(f'Found {len(files)} frames in {casepath}')
     filepaths = list(map(lambda file:os.path.join(load_path,case,file),files))
     
     curr_df = pd.DataFrame(filepaths,columns=['path'])

@@ -15,6 +15,14 @@ import torch.multiprocessing as mp
 # from pytorch_i3d import InceptionI3d
 #from R3D import generate_model
 
+
+def safe_torch_load(path, map_location):
+    # Prefer the safer PyTorch load mode when available, and fall back for older versions.
+    try:
+        return torch.load(path, map_location=map_location, weights_only=True)
+    except Exception:
+        return torch.load(path, map_location=map_location, weights_only=False)
+
 class fullModel(nn.Module):
         
         def __init__(self,data_type='raw',nclasses=2,domain='NH_02',rep_dim=512,encoder_type='R3D',modalities='RGB-Flow',encoder_depth=18,load_pretrained_params=True,freeze_encoder_params=True,self_attention=True,importance_loss=False):
@@ -519,11 +527,14 @@ def loadModel(rank,world_size,savepath,data_type,nclasses,domain,rep_dim,encoder
         #dist.init_process_group("nccl", rank=rank, world_size=world_size)
         model = fullModel(data_type,nclasses,domain,rep_dim,encoder_type,modalities=modalities,freeze_encoder_params=freeze_encoder_params,self_attention=self_attention,importance_loss=importance_loss)
         if inference == True:
-            params = torch.load(os.path.join(savepath,'params.zip'),map_location='cpu')
+            params = safe_torch_load(os.path.join(savepath,'params.zip'),map_location='cpu')
             """ Rename Params for Compatability """
             new_params = dict()
             for param_name,param in params.items():
-                new_name = param_name.split('module.')[1]
+                if param_name.startswith('module.'):
+                    new_name = param_name.split('module.',1)[1]
+                else:
+                    new_name = param_name
                 new_params[new_name] = param
             print('# of Loaded Params: %i' % len(new_params.keys()),'# of Model Params: %i' % len(dict(model.named_parameters()).keys()))
             model.load_state_dict(new_params)
@@ -559,7 +570,7 @@ def loadModel(rank,world_size,savepath,data_type,nclasses,domain,rep_dim,encoder
                 name = gesture
                 gesture_prototypes[name] = nn.Parameter(torch.rand(1,256,device=device))
         else:
-            gesture_prototypes = torch.load(os.path.join(savepath,'prototypes.zip'),map_location=device) #'cpu'
+            gesture_prototypes = safe_torch_load(os.path.join(savepath,'prototypes.zip'),map_location=device) #'cpu'
             gesture_prototypes = gesture_prototypes #[fold]
             print('Prototypes Loaded!')
         

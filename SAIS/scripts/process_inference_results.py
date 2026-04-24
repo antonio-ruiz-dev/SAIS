@@ -8,6 +8,14 @@ import torch
 import time
 label_encoder = LabelEncoder()
 
+
+def safe_torch_load(path, map_location):
+    # Prefer the safer PyTorch load mode when available, and fall back for older versions.
+    try:
+        return torch.load(path, map_location=map_location, weights_only=True)
+    except Exception:
+        return torch.load(path, map_location=map_location, weights_only=False)
+
 parser = argparse.ArgumentParser()
 parser.add_argument('-p','--path',type=str)
 args = parser.parse_args()
@@ -95,8 +103,8 @@ def getSavepath(args,fold): # where params are saved
 
 def getResults(savepath,inference_set='test'):
     """ Get Output Probability Scores For All TTA Augments """
-    info = torch.load(os.path.join(savepath,'reps_and_labels_%s' % inference_set),map_location=device)
-    p = torch.load(os.path.join(savepath,'prototypes.zip'),map_location=device)      
+    info = safe_torch_load(os.path.join(savepath,'reps_and_labels_%s' % inference_set),map_location=device)
+    p = safe_torch_load(os.path.join(savepath,'prototypes.zip'),map_location=device)
     augment_versions = 3
     probs_df = pd.DataFrame()
     for augment in range(augment_versions):
@@ -254,7 +262,7 @@ if __name__ == '__main__':
 
     all_gest_df['Path'] = all_gest_df['Video'].apply(lambda video:os.path.join('images',video))
     if not os.path.exists(os.path.join(args.path,'results')):
-        os.makedir(os.path.join(args.path,'results'))
+        os.makedirs(os.path.join(args.path,'results'))
     all_gest_df.to_csv(os.path.join(args.path,'results/Custom_inference_gestures.csv'))
 
     diff = time.time() - starttime
