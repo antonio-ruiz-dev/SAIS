@@ -11,7 +11,7 @@ def build_input_dirs(dataset_root: Path):
     ]
 
 
-def find_capture1_avi_files(input_dirs):
+def find_capture_avi_files(input_dirs):
     avi_files = []
     for input_dir in input_dirs:
         if not input_dir.exists():
@@ -19,15 +19,14 @@ def find_capture1_avi_files(input_dirs):
             continue
 
         for avi_path in sorted(input_dir.glob("*.avi")):
-            if "_capture1" in avi_path.stem:
+            if "_capture1" in avi_path.stem or "_capture2" in avi_path.stem:
                 avi_files.append(avi_path)
     return avi_files
 
 
 def output_name_from_input(avi_path: Path):
-    # Keep original name minus the `_capture1` token, then change extension to .mp4.
-    clean_stem = avi_path.stem.replace("_capture1", "")
-    return f"{clean_stem}.mp4"
+    # Keep original name (including _captureX suffix), change extension to .mp4.
+    return f"{avi_path.stem}.mp4"
 
 
 def convert_with_ffmpeg(input_file: Path, output_file: Path, overwrite: bool):
@@ -53,7 +52,7 @@ def convert_with_ffmpeg(input_file: Path, output_file: Path, overwrite: bool):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Convert JIGSAWS _capture1 AVI files to MP4 under ./SAIS/videos"
+        description="Convert JIGSAWS _capture1/_capture2 AVI files to MP4 under ./SAIS/videos"
     )
     parser.add_argument(
         "--dataset-root",
@@ -75,10 +74,10 @@ def main():
     args = parser.parse_args()
 
     input_dirs = build_input_dirs(args.dataset_root)
-    avi_files = find_capture1_avi_files(input_dirs)
+    avi_files = find_capture_avi_files(input_dirs)
 
     if not avi_files:
-        print("No AVI files with '_capture1' were found.")
+        print("No AVI files with '_capture1' or '_capture2' were found.")
         return
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
