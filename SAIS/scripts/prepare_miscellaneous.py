@@ -45,7 +45,7 @@ def calcNCELoss(rank,snip_sequence,labels,videoname,gesture_prototypes,domains):
     dens = torch.sum(sim_exp,1) # nbatch 
     #print('In calcCELoss -> Denominators: %s' % dens)
     loss = -torch.mean(torch.log(nums/dens)) # scalar
-    print('In calcCELoss -> Loss: %s' % loss)
+    #print('In calcCELoss -> Loss: %s' % loss)
     return loss
 
 def calcImportanceLoss(output_importances,importances,ipad,labels):
@@ -110,13 +110,13 @@ def calcNCEMetrics(rank,snip_sequence_list,labels_list,videoname_list,gesture_pr
     print('Prototype norms: %s' % norm)
     print('Prototype representations: %s' % p)
     p_norm = p / norm
-    print('Normalized prototype representations: %s' % p_norm)
+    #print('Normalized prototype representations: %s' % p_norm)
     # if torch.cuda.is_available():
     #     p_norm = p_norm.to(rank)
     # else:
     p_norm = p_norm.to('cpu')
     p_labels = list(gesture_prototypes.keys())
-    print('Gesture prototypes: %s' % p_labels)
+   # print('Gesture prototypes: %s' % p_labels)
 
     def getProbs(snip_sequence,labels,videoname,p_norm,p_labels):
 
