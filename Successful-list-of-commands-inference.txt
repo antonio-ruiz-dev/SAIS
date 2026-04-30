@@ -1,0 +1,442 @@
+************************************************************************************************************************************************************
+-- Inference:
+************************************************************************************************************************************************************
+1. 	A. For a single video file
+		option 1: no output directory arg:
+			python ./SAIS/scripts/video_to_frames.py Suturing_B001_capture1
+		option 2: specify output directory:
+			python ./SAIS/scripts/video_to_frames.py Knot_Tying_B003_capture1 ./SAIS/images
+
+		option 1 was ran for video Suturing_B001_capture1.mp4
+			This created SAIS/images/Suturing_B001_capture1/
+															|-frames_00000001.jpg
+															|-frames_00000002.jpg
+															|...
+															|-frames_00005639.jpg
+															|-frames_00005640.jpg
+		
+			Output:
+			ffmpeg version 2026-04-09-git-d3d0b7a5ee-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers
+			  built with gcc 15.2.0 (Rev11, Built by MSYS2 project)
+			  configuration: --enable-gpl --enable-version3 --enable-static --disable-w32threads --disable-autodetect --enable-cairo --enable-fontconfig --enable-iconv --enable-gnutls --enable-lcms2 --enable-libxml2 --enable-gmp --enable-bzlib --enable-lzma --enable-libsnappy --enable-zlib --enable-librist --enable-libsrt --enable-libssh --enable-libzmq --enable-avisynth --enable-libbluray --enable-libcaca --enable-libdvdnav --enable-libdvdread --enable-sdl2 --enable-libaribb24 --enable-libaribcaption --enable-libdav1d --enable-libdavs2 --enable-libopenjpeg --enable-libquirc --enable-libuavs3d --enable-libxevd --enable-libzvbi --enable-liboapv --enable-libqrencode --enable-librav1e --enable-libsvtav1 --enable-libvvenc --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxavs2 --enable-libxeve --enable-libxvid --enable-libaom --enable-libjxl --enable-libsvtjpegxs --enable-libvpx --enable-mediafoundation --enable-libass --enable-frei0r --enable-libfreetype --enable-libfribidi --enable-libharfbuzz --enable-liblensfun --enable-libvidstab --enable-libvmaf --enable-libzimg --enable-amf --enable-cuda-llvm --enable-cuvid --enable-dxva2 --enable-d3d11va --enable-d3d12va --enable-ffnvcodec --enable-libvpl --enable-nvdec --enable-nvenc --enable-vaapi --enable-libshaderc --enable-vulkan --enable-libplacebo --enable-opencl --enable-libcdio --enable-openal --enable-libgme --enable-libmodplug --enable-libopenmpt --enable-libopencore-amrwb --enable-libmp3lame --enable-libshine --enable-libtheora --enable-libtwolame --enable-libvo-amrwbenc --enable-libcodec2 --enable-libilbc --enable-libgsm --enable-liblc3 --enable-libopencore-amrnb --enable-libopus --enable-libspeex --enable-libvorbis --enable-ladspa --enable-libbs2b --enable-libflite --enable-libmysofa --enable-librubberband --enable-libsoxr --enable-chromaprint --enable-whisper
+			  libavutil      60. 29.100 / 60. 29.100
+			  libavcodec     62. 29.101 / 62. 29.101
+			  libavformat    62. 13.102 / 62. 13.102
+			  libavdevice    62.  4.100 / 62.  4.100
+			  libavfilter    11. 15.101 / 11. 15.101
+			  libswscale      9.  7.100 /  9.  7.100
+			  libswresample   6.  4.100 /  6.  4.100
+			Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'C:\dev\github\maestria\SAIS\SAIS\videos\Suturing_B001_capture1.mp4':
+			  Metadata:
+				major_brand     : isom
+				minor_version   : 512
+				compatible_brands: isomiso2avc1mp41
+				encoder         : Lavf62.13.102
+			  Duration: 00:03:08.00, start: 0.033008, bitrate: 412 kb/s
+			  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 640x480 [SAR 1:1 DAR 4:3], 409 kb/s, 30 fps, 30 tbr, 15360 tbn, start 0.033008 (default)
+				Metadata:
+				  handler_name    : VideoHandler
+				  encoder         : Lavc62.29.101 libx264
+			Stream mapping:
+			  Stream #0:0 -> #0:0 (h264 (native) -> mjpeg (native))
+			Press [q] to stop, [?] for help
+			Output #0, image2, to 'C:\dev\github\maestria\SAIS\SAIS\images\Suturing_B001_capture1\frames_%8d.jpg':
+			  Metadata:
+				major_brand     : isom
+				minor_version   : 512
+				compatible_brands: isomiso2avc1mp41
+				encoder         : Lavf62.13.102
+			  Stream #0:0(und): Video: mjpeg, yuv420p(pc, progressive), 640x480 [SAR 1:1 DAR 4:3], q=2-31, 200 kb/s, 30 fps, 30 tbn (default)
+				Metadata:
+				  encoder         : Lavc62.29.101 mjpeg
+				  handler_name    : VideoHandler
+				Side data:
+				  CPB properties: bitrate max/min/avg: 0/0/200000 buffer size: 0 vbv_delay: N/A
+			[out#0/image2 @ 0000013c66013800] video:40574KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+			frame= 5640 fps=988 q=24.8 Lsize=N/A time=00:03:08.00 bitrate=N/A speed=32.9x elapsed=0:00:05.70
+			=======================================================================================================
+			NOTE: this script generated 5640 frames stored in C:\dev\github\maestria\SAIS\SAIS\images\Suturing_B001_capture1\
+			The video has a duration of 03:08 --3 minutes and 8 seconds
+			at 30 fps that gives a total of 3 x 60 x 30 = 5400. Plus the 30/1=x/8 ==>x =30 x 8 = 240 
+			total 5400 + 240 = 5640 exactly what ffmpeg reports.
+			
+			
+
+
+	B. For many videos (all videos in SAIS/videos directory
+		python .\SAIS\scripts\run_video_to_frames_all_no-wsl.py
+
+		[1/1] Processing: inference-video-1.mp4
+		Running: ffmpeg -i SAIS\videos\inference-video-1.mp4 -q:v 2 SAIS\images\inference-video-1\frame_%08d.jpg
+		ffmpeg version 2026-04-09-git-d3d0b7a5ee-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers
+		  built with gcc 15.2.0 (Rev11, Built by MSYS2 project)
+		  configuration: --enable-gpl --enable-version3 --enable-static --disable-w32threads --disable-autodetect --enable-cairo --enable-fontconfig --enable-iconv --enable-gnutls --enable-lcms2 --enable-libxml2 --enable-gmp --enable-bzlib --enable-lzma --enable-libsnappy --enable-zlib --enable-librist --enable-libsrt --enable-libssh --enable-libzmq --enable-avisynth --enable-libbluray --enable-libcaca --enable-libdvdnav --enable-libdvdread --enable-sdl2 --enable-libaribb24 --enable-libaribcaption --enable-libdav1d --enable-libdavs2 --enable-libopenjpeg --enable-libquirc --enable-libuavs3d --enable-libxevd --enable-libzvbi --enable-liboapv --enable-libqrencode --enable-librav1e --enable-libsvtav1 --enable-libvvenc --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxavs2 --enable-libxeve --enable-libxvid --enable-libaom --enable-libjxl --enable-libsvtjpegxs --enable-libvpx --enable-mediafoundation --enable-libass --enable-frei0r --enable-libfreetype --enable-libfribidi --enable-libharfbuzz --enable-liblensfun --enable-libvidstab --enable-libvmaf --enable-libzimg --enable-amf --enable-cuda-llvm --enable-cuvid --enable-dxva2 --enable-d3d11va --enable-d3d12va --enable-ffnvcodec --enable-libvpl --enable-nvdec --enable-nvenc --enable-vaapi --enable-libshaderc --enable-vulkan --enable-libplacebo --enable-opencl --enable-libcdio --enable-openal --enable-libgme --enable-libmodplug --enable-libopenmpt --enable-libopencore-amrwb --enable-libmp3lame --enable-libshine --enable-libtheora --enable-libtwolame --enable-libvo-amrwbenc --enable-libcodec2 --enable-libilbc --enable-libgsm --enable-liblc3 --enable-libopencore-amrnb --enable-libopus --enable-libspeex --enable-libvorbis --enable-ladspa --enable-libbs2b --enable-libflite --enable-libmysofa --enable-librubberband --enable-libsoxr --enable-chromaprint --enable-whisper
+		  libavutil      60. 29.100 / 60. 29.100
+		  libavcodec     62. 29.101 / 62. 29.101
+		  libavformat    62. 13.102 / 62. 13.102
+		  libavdevice    62.  4.100 / 62.  4.100
+		  libavfilter    11. 15.101 / 11. 15.101
+		  libswscale      9.  7.100 /  9.  7.100
+		  libswresample   6.  4.100 /  6.  4.100
+		Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'SAIS\videos\inference-video-1.mp4':
+		  Metadata:
+			major_brand     : isom
+			minor_version   : 512
+			compatible_brands: isomiso2avc1mp41
+			encoder         : Lavf62.13.102
+		  Duration: 00:00:53.80, start: 0.033008, bitrate: 294 kb/s
+		  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 640x480 [SAR 1:1 DAR 4:3], 291 kb/s, 30 fps, 30 tbr, 15360 tbn, start 0.033008 (default)
+			Metadata:
+			  handler_name    : VideoHandler
+			  encoder         : Lavc62.29.101 libx264
+		Stream mapping:
+		  Stream #0:0 -> #0:0 (h264 (native) -> mjpeg (native))
+		Press [q] to stop, [?] for help
+		Output #0, image2, to 'SAIS\images\inference-video-1\frame_%08d.jpg':
+		  Metadata:
+			major_brand     : isom
+			minor_version   : 512
+			compatible_brands: isomiso2avc1mp41
+			encoder         : Lavf62.13.102
+		  Stream #0:0(und): Video: mjpeg, yuv420p(pc, progressive), 640x480 [SAR 1:1 DAR 4:3], q=2-31, 200 kb/s, 30 fps, 30 tbn (default)
+			Metadata:
+			  encoder         : Lavc62.29.101 mjpeg
+			  handler_name    : VideoHandler
+			Side data:
+			  CPB properties: bitrate max/min/avg: 0/0/200000 buffer size: 0 vbv_delay: N/A
+		[out#0/image2 @ 00000247312de240] video:34303KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+		frame= 1614 fps=554 q=2.0 Lsize=N/A time=00:00:53.80 bitrate=N/A speed=18.5x elapsed=0:00:02.91
+		  ✓ Success: inference-video-1.mp4
+
+		============================================================
+		✓ Completed successfully: 1 video(s) processed
+		============================================================
+		NOTE: Genereated 1,614 frames (jpg) files in SAIS/images/inference-video-1
+		
+2.  Generate paths to frames and flows and save as csv files
+		A. For a single file:
+			python ./SAIS/scripts/generate_paths.py -f $videoname -p ./SAIS/			(General)
+			python ./SAIS/scripts/generate_paths.py -f Suturing_B001_capture1 -p ./SAIS/	(specific)
+			Generating paths for 1 video(s)...
+			  0%|                                                                                            | 0/1 [00:00<?, ?it/s]Found 5640 frames in ./SAIS/images\Suturing_B001_capture1
+			100%|████████████████████████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00, 64.65it/s]
+			100%|████████████████████████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00, 63.15it/s]
+			Time taken (s): 0.063
+		
+			========================================================
+			NOTE: This script generated: SAIS/paths/Custom_FlowPaths.csv and Custom_Paths.csv
+			
+			Based on the code in `getSets()` and the CSV files, valid `category` values depend on the dataset:
+
+			**From main_dino.py logic:**
+
+			| Dataset | Valid `category` values |
+			|---|---|
+			| `LapGyn4_v1.2` | `'Anatomical_Structures'`, `'Actions_on_Anatomy'`, `'Instrument_Count'`, `'Surgical_Actions'` |
+			| `cholec80` | Any value — used directly as the video identifier |
+			| `NS`, `VUA`, etc. | Not used (ignored) |
+
+			**From your project's CSV files** — let me check what values are actually in them: 
+
+			Searched for text `category` (`**/SAIS/paths/*.csv`), 2 results
+
+			Ran terminal command: Import-Csv "c:\dev\github\maestria\SAIS\SAIS\paths\Custom_Paths.csv" | Select-Object -ExpandProperty category | Sort-Object -Unique
+
+			Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/paths/Custom_Paths.csv#1-1), lines 1 to 5
+
+			In your project's CSV files (Custom_Paths.csv and Custom_FlowPaths.csv), `category` contains the **video name** (e.g., `Suturing_B001_capture1`) — the same value as `label`. They are identical columns.
+
+			As confirmed earlier, for your `Custom_Gestures` dataset the `category` column is never actually read by any training or inference code — only `label` is used. The `category` column is essentially a duplicate of `label` in your CSVs and exists as a legacy artifact from when other datasets (like `cholec80`) needed it for a different purpose.
+		
+		B. For multiple files
+			python .\SAIS\scripts\generate_paths_multiple_or_all_videonames.py -p .\SAIS\
+			Generating paths for 1 video(s)...
+			100%|████████████████████████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00, 98.89it/s]
+			100%|███████████████████████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00, 255.73it/s]
+			Time taken (s): 0.044
+			=============================================================
+			NOTE: Generated 2 csv files:
+				SAIS/paths
+					Custom_FlowPaths.csv
+					Custom_Paths.csv
+				The above name convention is due to the fact that generate_paths.py and its multiple videos version generate_paths_multiple_or_all_videonames have dataset variable set to Custom
+
+3. 	Generate flow maps
+	python ./SAIS/scripts/extract_representations.py --arch vit_small --patch_size 16 --model_type ViT_SelfSupervised_ImageNet --batch_size_per_gpu 2 --data_path ./SAIS/ --data_list 'Custom' --save_type h5 --optical_flow
+	
+	C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\requests\__init__.py:86: RequestsDependencyWarning: Unable to find acceptable character detection dependency (chardet or charset_normalizer).
+	  warnings.warn(
+	04/21/2026 01:05:15 - INFO: Loading faiss.
+	04/21/2026 01:05:15 - INFO: Successfully loaded faiss.
+	Using cache found in C:\Users\User/.cache\torch\hub\facebookresearch_xcit_main
+	Datasets to Extract Flows From: ['Custom']
+	inference-video-1
+	04/21/2026 01:05:16 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+	Custom
+	(107, 6)
+	04/21/2026 01:05:16 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+	Lets use 1 GPUs!
+	  0%|                                                                                           | 0/54 [00:00<?, ?it/s]04/21/2026 01:05:17 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\torch\functional.py:534: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at C:\cb\pytorch_1000000000000\work\aten\src\ATen\native\TensorShape.cpp:3596.)
+	  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+
+	100%|██████████████████████████████████████████████████████████████████████████████████| 54/54 [00:13<00:00,  3.94it/s]
+	All Flows Saved!
+	Time taken (s): 14.157	
+	=============================================================
+	NOTE: Generated 106 flow files (jpg files with optical flow for the frames corresponding to every 15 frames)
+	files generated in SAIS\flows\Suturing_B001_capture1
+									flows_00000001.jpg
+									flows_00000002.jpg
+									.
+									.
+									flows_00000374.jpg
+	if each flow corresponds to 15 frames jump. it makes sense that 5640 frames, divided by 15 is 376, very close to the reported 374
+	
+	
+									
+									
+4.  Extract representations of RGB images
+		python ./SAIS/scripts/extract_representations.py --arch vit_small --patch_size 16 --model_type ViT_SelfSupervised_ImageNet --batch_size_per_gpu 2 --data_path ./SAIS/ --data_list Custom --save_type h5
+		
+		C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\requests\__init__.py:86: RequestsDependencyWarning: Unable to find acceptable character detection dependency (chardet or charset_normalizer).
+		  warnings.warn(
+		04/30/2026 02:22:56 - INFO: Loading faiss.
+		04/30/2026 02:22:56 - INFO: Successfully loaded faiss.
+		Using cache found in C:\Users\User/.cache\torch\hub\facebookresearch_xcit_main
+		C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\requests\__init__.py:86: RequestsDependencyWarning: Unable to find acceptable character detection dependency (chardet or charset_normalizer).
+		  warnings.warn(
+		04/30/2026 02:23:00 - INFO: Loading faiss.
+		04/30/2026 02:23:00 - INFO: Successfully loaded faiss.
+		Custom
+		Loaded RGB Paths!
+		(5640, 4)
+		04/30/2026 02:23:00 - WARNING: C:\dev\github\maestria\SAIS\SAIS\scripts\extract_representations.py:189: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+		  params = torch.load(os.path.join(path_to_model,'dino_deitsmall%i_pretrain.pth' % args.patch_size))
+
+		100%|██████████████████████████████████████████████████████████████████████████████| 2820/2820 [03:53<00:00, 12.10it/s]
+		Info Saved!
+		Time taken (s): 238.161
+		
+	==============================================================
+	NOTE: with the arguments used, it generates the follwoing h5 file: /SAIS/SAIS/results/ViT_SelfSupervised_ImageNet_RepsAndLabels
+		Parses args:
+		arch = vit_small
+		patch_size = 16
+		model_type = ViT_SelfSupervised_ImageNet
+		batch_size_per_gpu = 2
+		data_path = ./SAIS/
+		data_list = [Custom]
+		save_type = h5
+		optical_flow = False
+		segmentation = False
+		Since optical_flow and segmentation are both false, it enters the default branch and calls multiprocessing spawn with 1 process for extractFeatures on dataset Custom.
+
+		Inside extractFeatures:
+
+		Uses CPU (hardcoded).
+		Builds a dataloader with SurgDataset in extract_only mode, resized to 224x224, batch size 2, no shuffle.
+		Loads DINO ViT-small self-supervised ImageNet weights from:
+		dino_deitsmall16_pretrain.pth
+		Runs model.eval() and computes representations for each batch.
+		Collects representations and labels in memory.
+		Since save_type is h5, it writes output to:
+		./SAIS/results/ViT_SelfSupervised_ImageNet_RepsAndLabels.h5
+		The H5 file stores one dataset per unique label, each containing stacked feature vectors for that label.
+		Prints:
+		Info Saved!
+		Time taken (s): ...
+		
+		In this script, the H5 file stores feature vectors grouped by label, not raw images and not metadata-heavy records.
+		For the saving logic, see extract_representations.py:352, extract_representations.py:390, and extract_representations.py:408.
+
+		What it contains:
+
+		One H5 dataset per unique label value from labels_list.
+		Each dataset key name is the label itself (for example, a video or patient id string).
+		The value for each key is a 2D array of stacked embeddings for samples with that label:
+		shape is approximately number_of_samples_for_label × embedding_dim.
+		The embeddings come from model(inputs) in extraction, then moved to numpy before saving at extract_representations.py:371.
+		What it does not contain:
+
+		No separate labels array (labels are encoded as dataset names/keys).
+		No frame paths, timestamps, or other metadata.
+		No train/val/test split info.
+		Filename produced:
+
+		Default reps: model_type_RepsAndLabels.h5 at extract_representations.py:401
+		Optical-flow reps mode: model_type_FlowRepsAndLabels.h5 at extract_representations.py:397
+		Segmentation reps mode: model_type_SegRepsAndLabels.h5 at extract_representations.py:399
+		For your earlier non-optical-flow run with Custom and ViT_SelfSupervised_ImageNet, the expected file name is ViT_SelfSupervised_ImageNet_RepsAndLabels.h5 under the results folder created from data_path.
+		===============================================================================================================================================
+
+	
+	
+5. 	Extract representations of flow maps
+		python ./SAIS/scripts/extract_representations.py --arch vit_small --patch_size 16 --model_type ViT_SelfSupervised_ImageNet --batch_size_per_gpu 2 --data_path ./SAIS/ --data_list Custom --save_type h5 --optical_flow_to_reps
+		
+		C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\requests\__init__.py:86: RequestsDependencyWarning: Unable to find acceptable character detection dependency (chardet or charset_normalizer).
+		  warnings.warn(
+		04/30/2026 02:49:51 - INFO: Loading faiss.
+		04/30/2026 02:49:51 - INFO: Successfully loaded faiss.
+		Using cache found in C:\Users\User/.cache\torch\hub\facebookresearch_xcit_main
+		C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\requests\__init__.py:86: RequestsDependencyWarning: Unable to find acceptable character detection dependency (chardet or charset_normalizer).
+		  warnings.warn(
+		04/30/2026 02:49:55 - INFO: Loading faiss.
+		04/30/2026 02:49:55 - INFO: Successfully loaded faiss.
+		Custom
+		Loaded Optical Flow Paths!
+		(375, 6)
+		04/30/2026 02:49:55 - WARNING: C:\dev\github\maestria\SAIS\SAIS\scripts\extract_representations.py:189: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+		  params = torch.load(os.path.join(path_to_model,'dino_deitsmall%i_pretrain.pth' % args.patch_size))
+
+		100%|████████████████████████████████████████████████████████████████████████████████| 188/188 [00:16<00:00, 11.53it/s]
+		Info Saved!
+		Time taken (s): 21.402
+			
+	=============================================================
+	NOTE: Extract representations of flow maps
+	Generated file found in SAIS\results\ViT_SelfSupervised_ImageNet_FlowRepsAndLabels.h5
+	
+	
+6. Run inference
+	python ./SAIS/scripts/run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 2 -bc -sa -domains in_vs_out -ph Custom_inference -dt reps -e 1 -f 1 --inference
+	python ./SAIS/scripts/run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 2 -bc -sa -domains in_vs_out -ph Custom_inference -dt reps -e 1 -f 1 --inference
+		Modalities: RGB-Flow
+		Self Attention: True
+		Balance Groups: False
+		Predict Importance: False
+		Domain: in_vs_out
+		Balance Classes: True
+		Fold: 0
+		*****
+		 Savepath: ./SAIS/params/Fold_0
+		 *****
+		Modalities: RGB-Flow
+		Self Attention: True
+		Balance Groups: False
+		Predict Importance: False
+		Loading Model...
+		ViT Loaded...
+		C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\torch\nn\modules\transformer.py:379: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.self_attn.batch_first was not True(use batch_first for better inference performance)
+		  warnings.warn(
+		# of Loaded Params: 4268 # of Model Params: 4268
+		Params Loaded...
+		Prototypes Loaded!
+		Loading Data...
+		1it [00:00, 249.72it/s]
+		(376, 6)
+
+		 **** Epoch 1 ****
+		Custom_inference
+		100%|████████████████████████████████████████████████████████████████████████████████| 188/188 [00:07<00:00, 26.09it/s]
+		Calculating NCE Metrics for 376 samples...
+		Calculating prototype similarities...for videos: ['Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1', 'Suturing_B001_capture1']
+		
+		C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\sklearn\metrics\_ranking.py:379: UndefinedMetricWarning: Only one class is present in y_true. ROC AUC score is not defined in that case.
+		  warnings.warn(
+		  Custom_inference_loss    Custom_inference_acc    Custom_inference_auc    Custom_inference_precision    Custom_inference_recall
+		-----------------------  ----------------------  ----------------------  ----------------------------  -------------------------
+							  0                   0.702                     nan                           0.5                      0.351
+		Time taken (s): 13.529
+		=======================================================
+		NOTES:
+		
+		**Why `auc = nan`**
+		The warning says only **one class is present in `y_true`** during inference. This means all samples in your inference set belong to the same gesture class — `roc_auc_score` requires at least two classes to compute AUC. The code catches the exception and returns `np.nan` ([prepare_miscellaneous.py line ~166](SAIS/scripts/prepare_miscellaneous.py#L166)):
+		```python
+		try:
+			auc = roc_auc_score(labels, probs, multi_class='ovr')
+		except:
+			auc = np.nan
+		```
+
+		**Why `precision = 0.5` and `recall = 0.351` are low**
+		Both use `average='macro'` — they average across all classes equally. Since only one class has samples, the other class(es) contribute `precision=0` (via `zero_division=0`), pulling the macro average down artificially.
+
+		**Root cause**
+		Your inference videos all belong to a single gesture class. This is likely because:
+		1. The videos in your inference set (`videos-used-for-inference-apr-29-2026`) happen to only contain one gesture type in `Custom_Gestures_Annotations.csv`, **or**
+		2. The `Custom_inference` phase in prepare_dataset.py is only loading samples from one gesture class
+
+		**Acc = 0.702 is meaningful** — the model is correctly classifying ~70% of frames. The AUC/precision/recall are misleading artifacts of single-class inference data, not model quality issues.
+
+		TO-DO to fix AUC reporting for single-class inference,  either ensure multi-class inference data, or skip AUC calculation when only one class is present.
+		Modifications made to prepare_miscellaneous.py as follows:
+		Patch the metrics utilities now so one-class ground truth is detected, AUC is marked with `*` plus a footnote, and precision/recall are computed only over labels present in the current evaluation batch. After editing, I’ll quickly re-open the file to confirm the behavior paths.
+
+		Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/prepare_miscellaneous.py#1-1), lines 1 to 240
+
+		The exact metric functions and will now patch only this file to add one-class detection, present-label precision/recall, and `AUC=*` footnote behavior in the printed table.
+
+		Generating patch (91 lines) in [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/prepare_miscellaneous.py)
+
+
+		```
+
+		```
+		Patch is in place. Do a quick readback of the updated sections to verify the new one-class logic and the `AUC=*` footnote print path are exactly where your runtime metrics are generated.
+
+		Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/prepare_miscellaneous.py#1-1), lines 1 to 240
+
+		Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/prepare_miscellaneous.py#240-240), lines 240 to 300
+
+		I spotted an indentation error introduced in the NCE metrics block; I’m applying a small corrective patch so the file executes cleanly.
+
+		Generating patch (16 lines) in [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/prepare_miscellaneous.py)
+
+
+		```
+
+		```
+
+
+		Checked [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/prepare_miscellaneous.py), no problems found
+
+		Implemented. Patched prepare_miscellaneous.py to do described behaviors.
+
+		What changed:
+
+		1. One-class ground-truth detection  
+		- Added logic to detect when only one label is present in y_true.
+		- When that happens, the code now prints:
+		  - only one gesture class found
+		  - precision/recall are computed over present labels only
+		  - AUC is marked as `*` because ROC AUC is undefined with one class
+
+		2. Precision/recall now use present labels only  
+		- Updated both metric paths:
+		  - prepare_miscellaneous.py
+		  - prepare_miscellaneous.py
+		- Precision/recall are computed with macro averaging restricted to labels present in y_true.
+		- This removes the artificial penalty from absent classes that was lowering your macro precision/recall.
+
+		3. AUC handling is now clean and explicit  
+		- Added safe AUC helper in prepare_miscellaneous.py.
+		- If only one class is present, AUC remains NaN internally, but output presentation uses `*`.
+
+		4. Result table now shows AUC as `*` with footnote  
+		- Updated prepare_miscellaneous.py:
+		  - if AUC is NaN, table prints `*`
+		  - prints footnote: AUC not reported because only one class is present in y_true
+
+		Why your metrics will change now:
+
+		1. Precision/recall  
+		- Before: macro average included missing classes, which pushed values down.
+		- Now: macro average is computed only over classes that actually exist in current inference ground truth.
+		- Result: precision/recall should better reflect performance on the available class(es).
+
+		2. AUC  
+		- AUC needs positive and negative classes in y_true.
+		- With one class only, ROC curve cannot be defined, so AUC is mathematically undefined.
+		- That is why output now shows `*` plus an explanatory footnote.
+
+		Validation:
+		- Syntax/errors check passed for prepare_miscellaneous.py with no reported errors.
+
+		Made changes.
+		
+
+7. python ./SAIS/scripts/process_inference_results.py -p ./SAIS/

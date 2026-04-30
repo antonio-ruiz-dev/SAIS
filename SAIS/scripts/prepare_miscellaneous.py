@@ -45,6 +45,7 @@ def calcNCELoss(rank,snip_sequence,labels,videoname,gesture_prototypes,domains):
     dens = torch.sum(sim_exp,1) # nbatch 
     #print('In calcCELoss -> Denominators: %s' % dens)
     loss = -torch.mean(torch.log(nums/dens)) # scalar
+
     #print('In calcCELoss -> Loss: %s' % loss)
     return loss
 
@@ -108,7 +109,7 @@ def calcNCEMetrics(rank,snip_sequence_list,labels_list,videoname_list,gesture_pr
     p = torch.vstack(list(gesture_prototypes.values())) # nprototypes x D
     norm = torch.norm(p,dim=1).unsqueeze(1).repeat(1,p.shape[1])
     print('Prototype norms: %s' % norm)
-    print('Prototype representations: %s' % p)
+    # print('Prototype representations: %s' % p)
     p_norm = p / norm
     #print('Normalized prototype representations: %s' % p_norm)
     # if torch.cuda.is_available():
