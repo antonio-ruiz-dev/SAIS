@@ -1,0 +1,117 @@
+04/29/2026 01:56:13 - INFO: Loading faiss.
+04/29/2026 01:56:13 - INFO: Successfully loaded faiss.
+04/29/2026 01:56:14 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 01:56:14 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 01:56:15 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\torch\functional.py:534: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at C:\cb\pytorch_1000000000000\work\aten\src\ATen\native\TensorShape.cpp:3596.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+
+04/29/2026 01:56:28 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 01:56:41 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 01:56:50 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 01:56:58 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 01:57:09 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 01:57:20 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 01:57:31 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 01:57:43 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 01:57:53 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 01:58:03 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 01:58:10 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 01:58:17 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 01:58:29 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 01:58:59 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 01:59:12 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 01:59:25 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 01:59:52 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:00:19 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:00:38 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:00:59 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:01:25 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:01:51 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:02:17 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:02:42 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:03:10 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:03:38 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:03:45 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:04:03 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:04:18 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:04:56 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:05:29 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:06:01 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:06:30 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:06:58 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:07:27 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:07:54 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:08:17 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:08:40 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:09:05 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:09:31 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:09:51 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:10:12 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:10:47 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:11:22 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:11:52 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:12:21 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:12:51 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+04/29/2026 02:17:02 - INFO: Loading faiss.
+04/29/2026 02:17:02 - INFO: Successfully loaded faiss.
+04/29/2026 02:17:06 - INFO: Loading faiss.
+04/29/2026 02:17:06 - INFO: Successfully loaded faiss.
+04/29/2026 02:17:06 - WARNING: C:\dev\github\maestria\SAIS\SAIS\scripts\extract_representations.py:189: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  params = torch.load(os.path.join(path_to_model,'dino_deitsmall%i_pretrain.pth' % args.patch_size))
+
+04/29/2026 15:56:09 - INFO: Loading faiss.
+04/29/2026 15:56:10 - INFO: Successfully loaded faiss.
+04/29/2026 15:56:14 - INFO: Loading faiss.
+04/29/2026 15:56:14 - INFO: Successfully loaded faiss.
+04/29/2026 15:56:15 - WARNING: C:\dev\github\maestria\SAIS\SAIS\scripts\extract_representations.py:189: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  params = torch.load(os.path.join(path_to_model,'dino_deitsmall%i_pretrain.pth' % args.patch_size))
+

@@ -37,13 +37,13 @@ def calcNCELoss(rank,snip_sequence,labels,videoname,gesture_prototypes,domains):
     cols = np.argmax(p_labels == s_labels,1)
     rows = list(range(len(cols)))
     nums = sim_exp[rows,cols] # nbatch
-    print('In calcCELoss -> Numerators: %s' % nums)
+    #print('In calcCELoss -> Numerators: %s' % nums)
     #dens = torch.sum(sim_exp,1) # nbatch 
     #if len(np.unique(domains)) > 1: # multi-task setting (only consider subset of prototypes)
     #    dens = torch.stack([torch.sum(sim_exp[i,[0,1]]) if domain == 'NH_02' else torch.sum(sim_exp[i,[2,3]]) for i,domain in enumerate(domains)])
     #else:
     dens = torch.sum(sim_exp,1) # nbatch 
-    print('In calcCELoss -> Denominators: %s' % dens)
+    #print('In calcCELoss -> Denominators: %s' % dens)
     loss = -torch.mean(torch.log(nums/dens)) # scalar
     print('In calcCELoss -> Loss: %s' % loss)
     return loss
@@ -130,15 +130,15 @@ def calcNCEMetrics(rank,snip_sequence_list,labels_list,videoname_list,gesture_pr
         labels = list(map(lambda label:str(label.cpu().detach().numpy().item()),labels))
 
         s_labels = list(map(lambda tup:tup[1],zip(sides,labels))) #e.g. 0L, 2R, etc
-        print('Video sides + labels: %s' % s_labels)
+        # print('Video sides + labels: %s' % s_labels)
         s_labels = np.repeat(np.expand_dims(np.array(s_labels),1),p.shape[0],axis=1) # nbatch x nprototypes
-        print('side labels repeated across prototypes: %s' % s_labels)
+        #print('side labels repeated across prototypes: %s' % s_labels)
         print(p_labels,s_labels)
         labels = torch.tensor(np.argmax(p_labels == s_labels,1))
-        print('Prototype labels: %s' % p_labels)
-        print('Side + label matches with prototypes: %s' % (p_labels == s_labels))      
+        #print('Prototype labels: %s' % p_labels)
+        #print('Side + label matches with prototypes: %s' % (p_labels == s_labels))      
         probs = sim_exp / torch.sum(sim_exp,1).unsqueeze(1).repeat(1,sim_exp.shape[1]) # nbatch x nprototype
-        print('Prototype probabilities: %s' % probs)
+        #print('Prototype probabilities: %s' % probs)
         return probs, labels
     
     if isinstance(snip_sequence_list,tuple):

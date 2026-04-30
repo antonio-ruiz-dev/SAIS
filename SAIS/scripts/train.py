@@ -105,9 +105,9 @@ def trainModel(rank,world_size,root_path,savepath,dataset_name,data_type,batch_s
                 if inference == False:
                     if not os.path.exists(savepath):
                         os.makedirs(savepath) 
-                    torch.save(best_params_dict,os.path.join(savepath,'params'))
+                    torch.save(best_params_dict,os.path.join(savepath,'params.zip'))
                     torch.save(metrics_dict,os.path.join(savepath,'metrics'))
-                    torch.save(best_prototypes_dict,os.path.join(savepath,'prototypes'))
+                    torch.save(best_prototypes_dict,os.path.join(savepath,'prototypes.zip'))
                     torch.save(reps_and_labels_dict,os.path.join(savepath,'reps_and_labels'))
                     print('All Info Saved!')
                 elif inference == True:

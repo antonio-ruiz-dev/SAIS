@@ -478,13 +478,15 @@ if __name__ == '__main__':
             assert dataset_name in ['Custom','NS','VUA','NS_Gronau','VUA_Gronau','RAPN','VUA_COH','VUA_HMH','VUA_Lab','JIGSAWS_Suturing','DVC_UCL']
             df = pd.read_csv(os.path.join(args.data_path,'paths','%s_FlowPaths.csv' % dataset_name))
             pids = df['label'].unique()
+            print(f'extract_representations: label IDs to Extract Flows From for {dataset_name}: {pids}')
             #pids = ['HMV23','HMV24','HMV25','HMV26']#,'HMV17','HMV18','HMV19','HMV20','HMV21','HMV22']
             #pids = getNewNSVids() #from main_dino.py
             #fps_dict = getFPS(dataset_name) # only for VUA and VUA_HMH
             #pids = getNewVUAVids()
             #pids = sorted(list(set(pids) - set(getNewVUAVids()))) #from main_dino.py
             for pid in pids: #iterate over patient IDs
-                if not os.path.exists(os.path.join(args.data_path,dataset_name,'Flows',pid)): #avoid recreating the optical flows
+                # Match saveFlows output path: <data_path>/flows/<pid>
+                if not os.path.exists(os.path.join(args.data_path,'flows',pid)): #avoid recreating the optical flows
                     print(pid)
                     if dataset_name in ['VUA','VUA_HMH']:
                         jump_size = int(fps_dict[pid] // 2) 

@@ -25,36 +25,41 @@ def find_transcription_dir(dataset_root: Path, task_name: str) -> Path:
 def parse_transcription_file(file_path: Path, row_id_start: int):
     rows = []
     row_id = row_id_start
-    with file_path.open("r", encoding="utf-8") as handle:
-        for line_number, line in enumerate(handle, start=1):
-            parts = line.strip().split()
-            if not parts:
-                continue
-            if len(parts) < 3:
-                raise ValueError(
-                    "Malformed transcription row in %s:%i. Expected 'StartFrame EndFrame Gesture'."
-                    % (file_path, line_number)
+    base_video_name = file_path.stem
+    
+    # Generate annotations for both _capture1 and _capture2
+    for capture_suffix in ("_capture1", "_capture2"):
+        video_name = base_video_name + capture_suffix
+        with file_path.open("r", encoding="utf-8") as handle:
+            for line_number, line in enumerate(handle, start=1):
+                parts = line.strip().split()
+                if not parts:
+                    continue
+                if len(parts) < 3:
+                    raise ValueError(
+                        "Malformed transcription row in %s:%i. Expected 'StartFrame EndFrame Gesture'."
+                        % (file_path, line_number)
+                    )
+
+                try:
+                    start_frame = int(parts[0])
+                    end_frame = int(parts[1])
+                except ValueError as exc:
+                    raise ValueError(
+                        "Invalid frame range in %s:%i. StartFrame and EndFrame must be integers."
+                        % (file_path, line_number)
+                    ) from exc
+
+                row_id += 1
+                rows.append(
+                    {
+                        "id": row_id,
+                        "Video": video_name,
+                        "Gesture": parts[2].strip(),
+                        "StartFrame": start_frame,
+                        "EndFrame": end_frame,
+                    }
                 )
-
-            try:
-                start_frame = int(parts[0])
-                end_frame = int(parts[1])
-            except ValueError as exc:
-                raise ValueError(
-                    "Invalid frame range in %s:%i. StartFrame and EndFrame must be integers."
-                    % (file_path, line_number)
-                ) from exc
-
-            row_id += 1
-            rows.append(
-                {
-                    "id": row_id,
-                    "Video": file_path.stem,
-                    "Gesture": parts[2].strip(),
-                    "StartFrame": start_frame,
-                    "EndFrame": end_frame,
-                }
-            )
 
     return rows, row_id
 
