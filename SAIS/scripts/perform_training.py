@@ -46,7 +46,7 @@ def single_epoch_feature_extraction(dataloader,model,optimizer,device,phase,ncla
 
 # %%
 
-def single_epoch(rank,world_size,dataloader,model_dict,optimizer,device,phase,nclasses,task,importance_loss):
+def single_epoch(rank,world_size,dataloader,model_dict,optimizer,device,phase,nclasses,task,importance_loss,simulate_single_gesture=False):
         model = model_dict['model']
         snip_sequence_list = []
         snip_sequence2_list = []
@@ -205,14 +205,14 @@ def single_epoch(rank,world_size,dataloader,model_dict,optimizer,device,phase,nc
         
         ave_loss = running_loss / (len(dataloader[phase].dataset))
         if task == 'MIL':
-            acc, auc, prec, rec = calcMetrics(output_logits_list,labels_list,nclasses)
+            acc, auc, prec, rec = calcMetrics(output_logits_list,labels_list,nclasses,phase=phase,simulate_single_gesture=simulate_single_gesture)
         elif task == 'Prototypes':
             if phase == 'inference':
                 acc, auc, prec, rec = 0, 0, 0, 0
             else:
                 if isinstance(snip_sequence,list):
                     snip_sequence_list = (snip_sequence_list,snip_sequence2_list,snip_sequence3_list)
-                acc, auc, prec, rec = calcNCEMetrics(rank,snip_sequence_list,labels_list,videoname_list,model_dict['prototypes'])
+                acc, auc, prec, rec = calcNCEMetrics(rank,snip_sequence_list,labels_list,videoname_list,model_dict['prototypes'],phase=phase,simulate_single_gesture=simulate_single_gesture)
         elif task == 'ClassificationHead':
             if phase in ['inference','USC_inference']:
                 if isinstance(snip_sequence,list):
@@ -221,7 +221,7 @@ def single_epoch(rank,world_size,dataloader,model_dict,optimizer,device,phase,nc
             else:
                 if isinstance(snip_sequence,list):
                     output_logits_list = (output_logits_list,output_logits2_list,output_logits3_list)
-                acc, auc, prec, rec = calcMetrics(output_logits_list,labels_list,nclasses)
+                acc, auc, prec, rec = calcMetrics(output_logits_list,labels_list,nclasses,phase=phase,simulate_single_gesture=simulate_single_gesture)
         
         metrics = {'loss':ave_loss,'acc':acc,'auc':auc,'precision':prec,'recall':rec}
         return metrics, snip_sequence_list, labels_list, videoname_list, attention_list, importance_list, output_logits_list #snippets_dict, attention_dict

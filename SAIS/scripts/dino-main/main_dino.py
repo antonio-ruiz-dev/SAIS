@@ -193,6 +193,8 @@ def getSets(df,dataset_name,phase,train_fraction,args):
     if args.task != 'DINO': # DINO does not need labels 
         new_df['label'] = enc.transform(new_df['label'])
     new_df['dataset'] = dataset_name
+    # print(f'ARZZ::{dataset_name} {phase} set: {len(new_df)} samples')
+    # print(f'ARZZ::new_df :\n{new_df}')
     return new_df
 
 def getIndices(df,dataset_name,all_videos,phase,train_fraction):

@@ -12,8 +12,8 @@ from train import trainModel
 import torch.multiprocessing as mp
 import time
 
-def runExperiment(rank,world_size,root_path,savepath,dataset_name,data_type,batch_size,nclasses,domain,phases,lr,modalities,freeze_encoder_params,inference,task,balance,balance_groups,single_group,group_info,self_attention,importance_loss,encoder_type,encoder_params,snippetLength,frameSkip,overlap,rep_dim,nepochs,fold,training_fraction):
-        trainModel(rank,world_size,root_path,savepath,dataset_name,data_type,batch_size,nclasses,domain,phases,lr,modalities,freeze_encoder_params,inference,task,balance,balance_groups,single_group,group_info,self_attention,importance_loss,encoder_type,encoder_params,snippetLength,frameSkip,overlap,rep_dim,nepochs,fold,training_fraction)
+def runExperiment(rank,world_size,root_path,savepath,dataset_name,data_type,batch_size,nclasses,domain,phases,lr,modalities,freeze_encoder_params,inference,task,balance,balance_groups,single_group,group_info,self_attention,importance_loss,encoder_type,encoder_params,snippetLength,frameSkip,overlap,rep_dim,nepochs,fold,training_fraction,simulate_single_gesture):
+        trainModel(rank,world_size,root_path,savepath,dataset_name,data_type,batch_size,nclasses,domain,phases,lr,modalities,freeze_encoder_params,inference,task,balance,balance_groups,single_group,group_info,self_attention,importance_loss,encoder_type,encoder_params,snippetLength,frameSkip,overlap,rep_dim,nepochs,fold,training_fraction,simulate_single_gesture)
 
 # %%
 parser = argparse.ArgumentParser()
@@ -42,6 +42,7 @@ parser.add_argument('-e','--nepochs',type=int,help='choose number of epochs')
 parser.add_argument('-f','--nfolds',type=int,help='choose number of folds')
 #parser.add_argument('-folds','--folds',nargs='+',type=int,help='choose number of folds')
 parser.add_argument('-i','--inference',default=False,action='store_true')
+parser.add_argument('--simulate-single-gesture',default=False,action='store_true',help='allow AUC calculation even when only one gesture class is present (for simulation)')
 parser.add_argument('--local_rank',type=int, default=0)
 args = parser.parse_args()
 
@@ -58,6 +59,7 @@ phases = args.phases #['train','val']
 lr = args.learning_rate
 freeze_encoder_params = args.freeze_encoder #options: True (default) | False (i.e., update params)
 inference = args.inference #False #options: False (i.e., do not perform inference) | True (perform inference on test set, for example) - loads saved weights
+simulate_single_gesture = args.simulate_single_gesture
 task = args.task #'MIL' #options: AoT (self-supervision) | 'MIL' (multiple instance learning) | 'FeatureExtraction' (extract snippet features)
 balance = args.balance_classes
 balance_groups = args.balance_groups
@@ -111,7 +113,7 @@ if __name__ == '__main__':
             print('***** \n Savepath: %s \n *****' % savepath)
             world_size = 1 # more leads to hanging of process after experiment completion (might need to do a cleanup of processes)
             mp.spawn(runExperiment,
-                    args=(world_size,root_path,savepath,dataset_name,data_type,batch_size,nclasses,domain,phases,lr,modalities,freeze_encoder_params,inference,task,balance,balance_groups,single_group,group_info,self_attention,importance_loss,encoder_type,encoder_params,snippetLength,frameSkip,overlap,rep_dim,nepochs,fold,training_fraction),
+                    args=(world_size,root_path,savepath,dataset_name,data_type,batch_size,nclasses,domain,phases,lr,modalities,freeze_encoder_params,inference,task,balance,balance_groups,single_group,group_info,self_attention,importance_loss,encoder_type,encoder_params,snippetLength,frameSkip,overlap,rep_dim,nepochs,fold,training_fraction,simulate_single_gesture),
                     nprocs=world_size,
                     join=True)
             #else:

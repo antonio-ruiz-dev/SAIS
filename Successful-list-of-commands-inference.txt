@@ -301,8 +301,13 @@
 	
 	
 6. Run inference
-	python ./SAIS/scripts/run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 2 -bc -sa -domains in_vs_out -ph Custom_inference -dt reps -e 1 -f 1 --inference
-	python ./SAIS/scripts/run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 2 -bc -sa -domains in_vs_out -ph Custom_inference -dt reps -e 1 -f 1 --inference
+	A. For regular surgery videos (non-sim)
+		python ./SAIS/scripts/run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 2 -bc -sa -domains in_vs_out -ph Custom_inference -dt reps -e 1 -f 1 --inference
+		python ./SAIS/scripts/run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 2 -bc -sa -domains in_vs_out -ph Custom_inference -dt reps -e 1 -f 1 --inference
+		
+	B. For simulating 1 single gesture (JIGSAWS):
+		python run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 2 -bc -sa -domains in_vs_out -ph Custom_inference -dt reps -e 1 -f 1 --inference --simulate-single-gesture
+		
 		Modalities: RGB-Flow
 		Self Attention: True
 		Balance Groups: False
@@ -342,6 +347,52 @@
 		Time taken (s): 13.529
 		=======================================================
 		NOTES:
+		How does AUC is being calculated in the codebase to understand why it returns NaN during inference with a single gesture class but not during training. 
+
+
+		The exact AUC calculation code in prepare_miscellaneous.py: 
+
+		Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/prepare_miscellaneous.py#160-160), lines 160 to 180
+
+		Why AUC doesn't give NaN during training but does during inference with a single gesture class:
+
+		## The Problem
+
+		**During inference**: When running inference on a single video that contains only **one gesture class**, the `labels` array has only one unique class value. The `roc_auc_score()` function requires **at least 2 classes** to compute ROC AUC (you need two classes to define the true positive rate vs false positive rate trade-off). When only one class is present, it raises an exception which is caught on prepare_miscellaneous.py and returns `np.nan`.
+
+		**During training/validation**: Even though your model is trained on `Custom_Gestures`, the validation batches during training contain **multiple gesture classes** sampled from the validation dataset. Since multiple classes are present, AUC can be computed without error.
+
+		## The Root Cause
+
+		The code in prepare_miscellaneous.py doesn't check the number of unique classes before calling `roc_auc_score()`:
+
+		```python
+		try:
+			auc = roc_auc_score(labels, probs, multi_class='ovr')
+		except:
+			auc = np.nan
+		```
+
+		When inference runs on data with only one gesture class, the exception is triggered and caught silently.
+
+		## Solution
+
+		You should add an explicit check before computing AUC to handle single-class data gracefully:
+
+		```python
+		unique_classes = len(np.unique(labels))
+		if unique_classes < 2:
+			auc = np.nan  # AUC undefined with fewer than 2 classes
+		else:
+			try:
+				auc = roc_auc_score(labels, probs, multi_class='ovr')
+			except:
+				auc = np.nan
+		```
+
+		This way, you'd get a clear `nan` value rather than an exception, and it would be intentional and documented.
+		
+		
 		
 		**Why `auc = nan`**
 		The warning says only **one class is present in `y_true`** during inference. This means all samples in your inference set belong to the same gesture class — `roc_auc_score` requires at least two classes to compute AUC. The code catches the exception and returns `np.nan` ([prepare_miscellaneous.py line ~166](SAIS/scripts/prepare_miscellaneous.py#L166)):
@@ -438,5 +489,146 @@
 
 		Made changes.
 		
+		Latest changes (may 4): 
+		Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/prepare_miscellaneous.py#175-175), lines 175 to 240
 
-7. python ./SAIS/scripts/process_inference_results.py -p ./SAIS/
+		Searched for text `add_argument\|argparse\|parse_args` (`**/*.py`), no results
+
+		Searched for text `add_argument` (`**/*.py`), 20 results
+
+		Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/prepare_miscellaneous.py#1-1), lines 1 to 80
+
+		Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/run_experiments.py#1-1), lines 1 to 100
+
+		Searched for text `calcMetrics\|calcNCEMetrics` (`**/*.py`), no results
+
+		Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/run_experiments.py#100-100), lines 100 to 121
+
+		Searched for text `calcMetrics\|calcNCEMetrics` (`**/SAIS/scripts/*.py`), no results
+
+		Searched for text `calcMetrics\|calcNCEMetrics\|phase` (`**/SAIS/scripts/perform_training.py`), no results
+
+		Searched for text `trainModel\|perform_training\|simulate` (`**/SAIS/scripts/train.py`), no results
+
+		Searched for files matching `**/SAIS/scripts/train.py`, 1 match
+
+		Searched for files matching `**/SAIS/scripts/perform_training.py`, 1 match
+
+		Searching for text `calcMetrics\|calcNCEMetrics`
+
+		Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/train.py#1-1), lines 1 to 50
+
+		Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/train.py#50-50), lines 50 to 125
+
+		Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/perform_training.py#190-190), lines 190 to 230
+
+		Now I need to see the `single_epoch` signature in perform_training.py and the `calcNCEMetrics` signature in prepare_miscellaneous.py.  
+
+		Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/perform_training.py#1-1), lines 1 to 30
+
+		Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/prepare_miscellaneous.py#155-155), lines 155 to 175
+
+		Searched for regex `def single_epoch\|def calcNCEMetrics\|def calcMetrics` (`**/SAIS/scripts/*.py`), no results
+
+		Searching for regex `def single_epoch|def calcNCEMetrics|def calcMetrics`
+
+		Searched for text `def single_epoch` (`**/SAIS/scripts/perform_training.py`), 2 results
+
+		Searched for text `def calcNCEMetrics` (`**/SAIS/scripts/prepare_miscellaneous.py`), 1 result
+
+		Now I have all I need. Let me trace the full call chain and make all changes simultaneously.  
+
+		Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/perform_training.py#49-49), lines 49 to 55
+
+		Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/prepare_miscellaneous.py#116-116), lines 116 to 120
+
+		Now I have everything. Let me make all the changes across the 4 files: 
+
+		Created 4 todos
+
+		Replacing 8 lines with 10 lines in [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/run_experiments.py)
+
+
+		```
+
+		```
+
+
+		Starting: *Pass arg through runExperiment/trainModel* (2/4)
+
+		Replacing 1 lines with 1 lines in [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/train.py)
+
+
+		```
+
+		```
+		Now update the `single_epoch` call inside `trainModel` in train.py: 
+
+		Replacing 2 lines with 2 lines in [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/train.py)
+
+
+		```
+
+		```
+
+
+		Starting: *Update single_epoch signature* (3/4)
+
+		Now update `single_epoch` in perform_training.py and its calls to `calcMetrics`/`calcNCEMetrics`: 
+
+		Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/perform_training.py#200-200), lines 200 to 230
+
+		Replacing 19 lines with 19 lines in [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/perform_training.py)
+
+
+		```
+
+		```
+
+
+		Starting: *Update calcMetrics/calcNCEMetrics* (4/4)
+
+		Now update `calcMetrics` and `calcNCEMetrics` in prepare_miscellaneous.py:  
+
+		Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/prepare_miscellaneous.py#116-116), lines 116 to 200
+
+		Replacing 23 lines with 23 lines in [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/prepare_miscellaneous.py)
+
+
+		```
+
+		```
+
+
+		Completed: *Update calcMetrics/calcNCEMetrics* (4/4)
+
+		All changes are done. Here's a summary of what was modified across 4 files:
+
+		**run_experiments.py**
+		- Added `--simulate-single-gesture` flag (store_true, default False)
+		- Extracted it as `simulate_single_gesture = args.simulate_single_gesture`
+		- Added it to `runExperiment` signature and forwarded to `trainModel`
+		- Added it to the `mp.spawn` args tuple
+
+		**train.py**
+		- Added `simulate_single_gesture=False` to `trainModel` signature
+		- Passed it to `single_epoch`
+
+		**perform_training.py**
+		- Added `simulate_single_gesture=False` to `single_epoch` signature
+		- Passed it to all `calcMetrics` and `calcNCEMetrics` calls
+
+		**prepare_miscellaneous.py**
+		- Added `simulate_single_gesture=False` to both `calcNCEMetrics` and `calcMetrics`
+		- Changed the AUC skip condition from `phase == 'inference' and len(np.unique(labels)) < 2` to `... and not simulate_single_gesture`
+
+		Usage example:
+		```
+		python run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 2 -bc -sa -domains in_vs_out -ph Custom_inference -dt reps -e 1 -f 1 --inference --simulate-single-gesture
+		```
+
+		Made changes.
+		
+
+7.	process inference results to generate valid predictions 
+		python ./SAIS/scripts/process_inference_results.py -p ./SAIS/ 	

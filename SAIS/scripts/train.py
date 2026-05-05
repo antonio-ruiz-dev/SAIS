@@ -15,7 +15,7 @@ import copy
 import torch
 import os
 
-def trainModel(rank,world_size,root_path,savepath,dataset_name,data_type,batch_size,nclasses,domain,phases,lr,modalities,freeze_encoder_params,inference,task,balance,balance_groups,single_group,group_info,self_attention,importance_loss,encoder_type,encoder_params,snippetLength,frameSkip,overlap,rep_dim,nepochs,fold,training_fraction):
+def trainModel(rank,world_size,root_path,savepath,dataset_name,data_type,batch_size,nclasses,domain,phases,lr,modalities,freeze_encoder_params,inference,task,balance,balance_groups,single_group,group_info,self_attention,importance_loss,encoder_type,encoder_params,snippetLength,frameSkip,overlap,rep_dim,nepochs,fold,training_fraction,simulate_single_gesture=False):
         # if torch.cuda.is_available():
         #     backend = 'nccl'
         # else:
@@ -68,7 +68,7 @@ def trainModel(rank,world_size,root_path,savepath,dataset_name,data_type,batch_s
                                 videonames_dict[phase] = videonames
                                 labels_dict[phase] = labels
                         else:
-                                metrics, snippets, labels, videonames, attention, importance, logits = single_epoch(rank,world_size,dataloader,model,optimizer,device,phase,nclasses,task,importance_loss)
+                                metrics, snippets, labels, videonames, attention, importance, logits = single_epoch(rank,world_size,dataloader,model,optimizer,device,phase,nclasses,task,importance_loss,simulate_single_gesture)
                                 printMetrics(phase,metrics)
                                 #writer.add_scalar('loss/%s' % phase,metrics['loss'],epoch_count)
 

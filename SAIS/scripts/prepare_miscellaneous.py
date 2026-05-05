@@ -11,6 +11,20 @@ import torch.nn as nn
 from tabulate import tabulate
 from sklearn.metrics import roc_auc_score, precision_score, recall_score
 
+_AUC_SINGLE_CLASS_NOTE = False
+
+
+def _mark_single_class_auc_note():
+        global _AUC_SINGLE_CLASS_NOTE
+        _AUC_SINGLE_CLASS_NOTE = True
+
+
+def _is_nan(value):
+        try:
+                return np.isnan(value)
+        except:
+                return False
+
 def calcNCELoss(rank,snip_sequence,labels,videoname,gesture_prototypes,domains):
     """ Prepare Prototypes """
     p = torch.vstack(list(gesture_prototypes.values())) # nprototypes x D
@@ -99,7 +113,7 @@ def calcSSLoss(future_reps,snip_reps):
         loss = criterion(pred_reps,future_reps)
         return loss
 
-def calcNCEMetrics(rank,snip_sequence_list,labels_list,videoname_list,gesture_prototypes):
+def calcNCEMetrics(rank,snip_sequence_list,labels_list,videoname_list,gesture_prototypes,phase=None,simulate_single_gesture=False):
     labels = torch.stack(labels_list)
     print(f'Calculating NCE Metrics for {len(labels)} samples...')
     videoname = videoname_list
@@ -108,7 +122,7 @@ def calcNCEMetrics(rank,snip_sequence_list,labels_list,videoname_list,gesture_pr
     """ Prtotype-Specific Stuff """
     p = torch.vstack(list(gesture_prototypes.values())) # nprototypes x D
     norm = torch.norm(p,dim=1).unsqueeze(1).repeat(1,p.shape[1])
-    print('Prototype norms: %s' % norm)
+    # print('Prototype norms: %s' % norm)
     # print('Prototype representations: %s' % p)
     p_norm = p / norm
     #print('Normalized prototype representations: %s' % p_norm)
@@ -170,15 +184,19 @@ def calcNCEMetrics(rank,snip_sequence_list,labels_list,videoname_list,gesture_pr
     if nclasses == 2:
         probs = probs[:,-1]
 
-    try:
-        auc = roc_auc_score(labels,probs,multi_class='ovr')
-    except:
+    if phase == 'inference' and len(np.unique(labels)) < 2 and not simulate_single_gesture:
+        _mark_single_class_auc_note()
         auc = np.nan
+    else:
+        try:
+            auc = roc_auc_score(labels,probs,multi_class='ovr')
+        except:
+            auc = np.nan
 
     return acc, auc, prec, rec
 
 
-def calcMetrics(output_logits_list,labels_list,nclasses):
+def calcMetrics(output_logits_list,labels_list,nclasses,phase=None,simulate_single_gesture=False):
         """ Calculate Accuracy for MIL 
         
         Args:
@@ -207,17 +225,34 @@ def calcMetrics(output_logits_list,labels_list,nclasses):
         rec = recall_score(labels,preds,average='macro', zero_division=0)
         #if nclasses == 2:
         #    output_probs = output_probs[:,-1]
-            
-        auc = roc_auc_score(labels,output_probs,multi_class='ovr')
+
+        if phase == 'inference' and len(np.unique(labels)) < 2 and not simulate_single_gesture:
+            _mark_single_class_auc_note()
+            auc = np.nan
+        else:
+            try:
+                auc = roc_auc_score(labels,output_probs,multi_class='ovr')
+            except:
+                auc = np.nan
         return acc, auc, prec, rec
 
 def printMetrics(phase,metrics):
+        global _AUC_SINGLE_CLASS_NOTE
         metric_names = list(metrics.keys())
         metric_values = list(metrics.values())
         
         metric_names = list(map(lambda name: phase + '_' + name,metric_names))
-        metric_values = list(map(lambda value: '%.3f' % value,metric_values))
+        if _AUC_SINGLE_CLASS_NOTE and 'auc' in metrics and _is_nan(metrics['auc']):
+            metric_values = [
+                '*' if name.endswith('_auc') else '%.3f' % value
+                for name, value in zip(metric_names,metric_values)
+            ]
+        else:
+            metric_values = list(map(lambda value: '%.3f' % value,metric_values))
         print(tabulate([metric_names,metric_values],headers='firstrow'))
+        if _AUC_SINGLE_CLASS_NOTE:
+            print('* AUC not computed: only one class is present in y_true for this phase.')
+            _AUC_SINGLE_CLASS_NOTE = False
 
 def trackMetrics(metrics,metrics_dict):
         for name,value in metrics.items():
