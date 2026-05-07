@@ -7,4 +7,180 @@ python -m torch.distributed.launch --nproc_per_node=1 SAIS/scripts/run_experimen
  
 python SAIS/scripts/run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom_Gestures -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 8 -lr 0.1 -nc 10 -bc -sa -domains Custom -ph train val test -dt reps -e 50 -f 8 -tf 1.0
 
-Inference
+-- Inference:
+1. python .\SAIS\scripts\run_video_to_frames_all_no-wsl.py
+
+	[1/1] Processing: inference-video-1.mp4
+	Running: ffmpeg -i SAIS\videos\inference-video-1.mp4 -q:v 2 SAIS\images\inference-video-1\frame_%08d.jpg
+	ffmpeg version 2026-04-09-git-d3d0b7a5ee-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers
+	  built with gcc 15.2.0 (Rev11, Built by MSYS2 project)
+	  configuration: --enable-gpl --enable-version3 --enable-static --disable-w32threads --disable-autodetect --enable-cairo --enable-fontconfig --enable-iconv --enable-gnutls --enable-lcms2 --enable-libxml2 --enable-gmp --enable-bzlib --enable-lzma --enable-libsnappy --enable-zlib --enable-librist --enable-libsrt --enable-libssh --enable-libzmq --enable-avisynth --enable-libbluray --enable-libcaca --enable-libdvdnav --enable-libdvdread --enable-sdl2 --enable-libaribb24 --enable-libaribcaption --enable-libdav1d --enable-libdavs2 --enable-libopenjpeg --enable-libquirc --enable-libuavs3d --enable-libxevd --enable-libzvbi --enable-liboapv --enable-libqrencode --enable-librav1e --enable-libsvtav1 --enable-libvvenc --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxavs2 --enable-libxeve --enable-libxvid --enable-libaom --enable-libjxl --enable-libsvtjpegxs --enable-libvpx --enable-mediafoundation --enable-libass --enable-frei0r --enable-libfreetype --enable-libfribidi --enable-libharfbuzz --enable-liblensfun --enable-libvidstab --enable-libvmaf --enable-libzimg --enable-amf --enable-cuda-llvm --enable-cuvid --enable-dxva2 --enable-d3d11va --enable-d3d12va --enable-ffnvcodec --enable-libvpl --enable-nvdec --enable-nvenc --enable-vaapi --enable-libshaderc --enable-vulkan --enable-libplacebo --enable-opencl --enable-libcdio --enable-openal --enable-libgme --enable-libmodplug --enable-libopenmpt --enable-libopencore-amrwb --enable-libmp3lame --enable-libshine --enable-libtheora --enable-libtwolame --enable-libvo-amrwbenc --enable-libcodec2 --enable-libilbc --enable-libgsm --enable-liblc3 --enable-libopencore-amrnb --enable-libopus --enable-libspeex --enable-libvorbis --enable-ladspa --enable-libbs2b --enable-libflite --enable-libmysofa --enable-librubberband --enable-libsoxr --enable-chromaprint --enable-whisper
+	  libavutil      60. 29.100 / 60. 29.100
+	  libavcodec     62. 29.101 / 62. 29.101
+	  libavformat    62. 13.102 / 62. 13.102
+	  libavdevice    62.  4.100 / 62.  4.100
+	  libavfilter    11. 15.101 / 11. 15.101
+	  libswscale      9.  7.100 /  9.  7.100
+	  libswresample   6.  4.100 /  6.  4.100
+	Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'SAIS\videos\inference-video-1.mp4':
+	  Metadata:
+		major_brand     : isom
+		minor_version   : 512
+		compatible_brands: isomiso2avc1mp41
+		encoder         : Lavf62.13.102
+	  Duration: 00:00:53.80, start: 0.033008, bitrate: 294 kb/s
+	  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 640x480 [SAR 1:1 DAR 4:3], 291 kb/s, 30 fps, 30 tbr, 15360 tbn, start 0.033008 (default)
+		Metadata:
+		  handler_name    : VideoHandler
+		  encoder         : Lavc62.29.101 libx264
+	Stream mapping:
+	  Stream #0:0 -> #0:0 (h264 (native) -> mjpeg (native))
+	Press [q] to stop, [?] for help
+	Output #0, image2, to 'SAIS\images\inference-video-1\frame_%08d.jpg':
+	  Metadata:
+		major_brand     : isom
+		minor_version   : 512
+		compatible_brands: isomiso2avc1mp41
+		encoder         : Lavf62.13.102
+	  Stream #0:0(und): Video: mjpeg, yuv420p(pc, progressive), 640x480 [SAR 1:1 DAR 4:3], q=2-31, 200 kb/s, 30 fps, 30 tbn (default)
+		Metadata:
+		  encoder         : Lavc62.29.101 mjpeg
+		  handler_name    : VideoHandler
+		Side data:
+		  CPB properties: bitrate max/min/avg: 0/0/200000 buffer size: 0 vbv_delay: N/A
+	[out#0/image2 @ 00000247312de240] video:34303KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+	frame= 1614 fps=554 q=2.0 Lsize=N/A time=00:00:53.80 bitrate=N/A speed=18.5x elapsed=0:00:02.91
+	  ✓ Success: inference-video-1.mp4
+
+	============================================================
+	✓ Completed successfully: 1 video(s) processed
+	============================================================
+	NOTE: Genereated 1,614 frames (jpg) files in SAIS/images/inference-video-1
+	
+2.  python .\SAIS\scripts\generate_paths_multiple_or_all_videonames.py -p .\SAIS\
+		Generating paths for 1 video(s)...
+		100%|████████████████████████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00, 98.89it/s]
+		100%|███████████████████████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00, 255.73it/s]
+		Time taken (s): 0.044
+	=============================================================
+	NOTE: Generated 2 csv files:
+		SAIS/paths
+			Custom_FlowPaths.csv
+			Custom_Paths.csv
+		The above name convention is due to the fact that generate_paths.py and its multiple videos version generate_paths_multiple_or_all_videonames have dataset variable set to Custom
+
+3. python ./SAIS/scripts/extract_representations.py --arch vit_small --patch_size 16 --model_type ViT_SelfSupervised_ImageNet --batch_size_per_gpu 2 --data_path ./SAIS/ --data_list 'Custom' --save_type h5 --optical_flow
+	C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\requests\__init__.py:86: RequestsDependencyWarning: Unable to find acceptable character detection dependency (chardet or charset_normalizer).
+	  warnings.warn(
+	04/21/2026 01:05:15 - INFO: Loading faiss.
+	04/21/2026 01:05:15 - INFO: Successfully loaded faiss.
+	Using cache found in C:\Users\User/.cache\torch\hub\facebookresearch_xcit_main
+	Datasets to Extract Flows From: ['Custom']
+	inference-video-1
+	04/21/2026 01:05:16 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+	Custom
+	(107, 6)
+	04/21/2026 01:05:16 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+
+	Lets use 1 GPUs!
+	  0%|                                                                                           | 0/54 [00:00<?, ?it/s]04/21/2026 01:05:17 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\torch\functional.py:534: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at C:\cb\pytorch_1000000000000\work\aten\src\ATen\native\TensorShape.cpp:3596.)
+	  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+
+	100%|██████████████████████████████████████████████████████████████████████████████████| 54/54 [00:13<00:00,  3.94it/s]
+	All Flows Saved!
+	Time taken (s): 14.157	
+	=============================================================
+	NOTE: Generated 106 flow files (jpg files with optical flow for the frames corresponding to every 15 frames)
+	files generated in SAIS\flows\inference-video-1
+									flows_00000001.jpg
+									flows_00000002.jpg
+									.
+									.
+									flows_00000106.jpg
+4.  python ./SAIS/scripts/extract_representations.py --arch vit_small --patch_size 16 --model_type ViT_SelfSupervised_ImageNet --batch_size_per_gpu 2 --data_path ./SAIS/ --data_list Custom --save_type h5
+		C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\requests\__init__.py:86: RequestsDependencyWarning: Unable to find acceptable character detection dependency (chardet or charset_normalizer).
+		  warnings.warn(
+		04/21/2026 01:15:32 - INFO: Loading faiss.
+		04/21/2026 01:15:32 - INFO: Successfully loaded faiss.
+		Using cache found in C:\Users\User/.cache\torch\hub\facebookresearch_xcit_main
+		C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\requests\__init__.py:86: RequestsDependencyWarning: Unable to find acceptable character detection dependency (chardet or charset_normalizer).
+		  warnings.warn(
+		04/21/2026 01:15:36 - INFO: Loading faiss.
+		04/21/2026 01:15:36 - INFO: Successfully loaded faiss.
+		Custom
+		Loaded RGB Paths!
+		(1614, 4)
+		04/21/2026 01:15:37 - WARNING: C:\Users\User\OneDrive\Documentos\GitHub\Maestria\SAIS\SAIS\scripts\extract_representations.py:189: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+		  params = torch.load(os.path.join(path_to_model,'dino_deitsmall%i_pretrain.pth' % args.patch_size))
+
+		100%|████████████████████████████████████████████████████████████████████████████████| 807/807 [01:10<00:00, 11.39it/s]
+		Info Saved!
+		Time taken (s): 76.222
+	==============================================================
+	NOTE: Extract representations of rgb images.
+	This produced the file SAIS\results\ViT_SelfSupervised_ImageNet_RepsAndLabels.h5
+5. python ./SAIS/scripts/extract_representations.py --arch vit_small --patch_size 16 --model_type ViT_SelfSupervised_ImageNet --batch_size_per_gpu 2 --data_path ./SAIS/ --data_list Custom --save_type h5 --optical_flow_to_reps
+		C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\requests\__init__.py:86: RequestsDependencyWarning: Unable to find acceptable character detection dependency (chardet or charset_normalizer).
+		  warnings.warn(
+		04/21/2026 01:20:34 - INFO: Loading faiss.
+		04/21/2026 01:20:34 - INFO: Successfully loaded faiss.
+		Using cache found in C:\Users\User/.cache\torch\hub\facebookresearch_xcit_main
+		C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\requests\__init__.py:86: RequestsDependencyWarning: Unable to find acceptable character detection dependency (chardet or charset_normalizer).
+		  warnings.warn(
+		04/21/2026 01:20:38 - INFO: Loading faiss.
+		04/21/2026 01:20:39 - INFO: Successfully loaded faiss.
+		Custom
+		Loaded Optical Flow Paths!
+		(107, 6)
+		04/21/2026 01:20:39 - WARNING: C:\Users\User\OneDrive\Documentos\GitHub\Maestria\SAIS\SAIS\scripts\extract_representations.py:189: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+		  params = torch.load(os.path.join(path_to_model,'dino_deitsmall%i_pretrain.pth' % args.patch_size))
+
+		100%|██████████████████████████████████████████████████████████████████████████████████| 54/54 [00:04<00:00, 11.43it/s]
+		Info Saved!
+		Time taken (s): 9.942
+		
+	=============================================================
+	NOTE: Extract representations of flow maps
+	Generated file found in SAIS\results\ViT_SelfSupervised_ImageNet_FlowRepsAndLabels.h5
+6. python ./SAIS/scripts/run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 2 -bc -sa -domains in_vs_out -ph Custom_inference -dt reps -e 1 -f 1 --inference
+   python ./SAIS/scripts/run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 2 -bc -sa -domains in_vs_out -ph Custom_inference -dt reps -e 1 -f 1 --inference
+		Modalities: RGB-Flow
+		Self Attention: True
+		Balance Groups: False
+		Predict Importance: False
+		Domain: in_vs_out
+		Balance Classes: True
+		Fold: 0
+		*****
+		 Savepath: ./SAIS/params/Fold_0
+		 *****
+		Modalities: RGB-Flow
+		Self Attention: True
+		Balance Groups: False
+		Predict Importance: False
+		Loading Model...
+		ViT Loaded...
+		C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\torch\nn\modules\transformer.py:379: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.self_attn.batch_first was not True(use batch_first for better inference performance)
+		  warnings.warn(
+		C:\Users\User\OneDrive\Documentos\GitHub\Maestria\SAIS\SAIS\scripts\prepare_model.py:522: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+		  params = torch.load(os.path.join(savepath,'params.zip'),map_location='cpu')
+		# of Loaded Params: 4268 # of Model Params: 4268
+		Params Loaded...
+		C:\Users\User\OneDrive\Documentos\GitHub\Maestria\SAIS\SAIS\scripts\prepare_model.py:565: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+		  gesture_prototypes = torch.load(os.path.join(savepath,'prototypes.zip'),map_location=device) #'cpu'
+		Prototypes Loaded!
+		Loading Data...
+		1it [00:00, 249.63it/s]
+		(107, 6)
+
+		 **** Epoch 1 ****
+		Custom_inference
+		100%|██████████████████████████████████████████████████████████████████████████████████| 54/54 [00:01<00:00, 28.17it/s]
+		  Custom_inference_loss    Custom_inference_acc    Custom_inference_auc    Custom_inference_precision    Custom_inference_recall
+		-----------------------  ----------------------  ----------------------  ----------------------------  -------------------------
+							  0                   0.037                     nan                          0.25                      0.009
+		Time taken (s): 8.489
+		=======================================================
+
+7. python ./SAIS/scripts/process_inference_results.py -p ./SAIS/

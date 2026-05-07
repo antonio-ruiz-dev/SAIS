@@ -1,5 +1,6 @@
 import torch
 import os
+import warnings
 from tqdm import tqdm
 tqdm.pandas()
 import argparse
@@ -26,6 +27,12 @@ import torch.multiprocessing as mp
 from moviepy.editor import VideoFileClip, ImageSequenceClip
 import torchvision # new
 import time
+
+warnings.filterwarnings(
+    "ignore",
+    message=r"Attribute 'loss_fn' is an instance of `nn\.Module` and is already saved during checkpointing\.",
+    category=UserWarning,
+)
 
 class OpticalFlowDataset(torch.utils.data.Dataset):
 

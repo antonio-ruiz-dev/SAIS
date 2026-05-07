@@ -22,14 +22,32 @@ def find_transcription_dir(dataset_root: Path, task_name: str) -> Path:
     )
 
 
-def parse_transcription_file(file_path: Path, row_id_start: int):
+def collect_available_videos(videos_dir: Path):
+    if not videos_dir.exists() or not videos_dir.is_dir():
+        raise FileNotFoundError("Videos directory not found: %s" % videos_dir)
+
+    videos_by_base_name = {}
+    for video_path in sorted(videos_dir.glob("*.mp4")):
+        stem = video_path.stem
+        if stem.endswith("_capture1"):
+            base_name = stem[: -len("_capture1")]
+        elif stem.endswith("_capture2"):
+            base_name = stem[: -len("_capture2")]
+        else:
+            base_name = stem
+        videos_by_base_name.setdefault(base_name, []).append(stem)
+
+    if not videos_by_base_name:
+        raise FileNotFoundError("No .mp4 files found in %s" % videos_dir)
+
+    return videos_by_base_name
+
+
+def parse_transcription_file(file_path: Path, row_id_start: int, video_names: list[str]):
     rows = []
     row_id = row_id_start
-    base_video_name = file_path.stem
     
-    # Generate annotations for both _capture1 and _capture2
-    for capture_suffix in ("_capture1", "_capture2"):
-        video_name = base_video_name + capture_suffix
+    for video_name in video_names:
         with file_path.open("r", encoding="utf-8") as handle:
             for line_number, line in enumerate(handle, start=1):
                 parts = line.strip().split()
@@ -64,22 +82,34 @@ def parse_transcription_file(file_path: Path, row_id_start: int):
     return rows, row_id
 
 
-def build_annotations_dataframe(dataset_root: Path) -> pd.DataFrame:
+def build_annotations_dataframe(dataset_root: Path, videos_dir: Path) -> pd.DataFrame:
     rows = []
     row_id = 0
+    available_videos = collect_available_videos(videos_dir)
 
     for task_name in TASK_NAMES:
         transcription_dir = find_transcription_dir(dataset_root, task_name)
-        transcription_files = sorted(transcription_dir.glob("*.txt"))
+        transcription_files = sorted(
+            file_path
+            for file_path in transcription_dir.glob("*.txt")
+            if file_path.stem in available_videos
+        )
         if not transcription_files:
-            raise FileNotFoundError("No transcription files found in %s" % transcription_dir)
+            continue
 
         for file_path in transcription_files:
-            file_rows, row_id = parse_transcription_file(file_path, row_id)
+            file_rows, row_id = parse_transcription_file(
+                file_path,
+                row_id,
+                available_videos[file_path.stem],
+            )
             rows.extend(file_rows)
 
     if not rows:
-        raise ValueError("No annotation rows were generated from %s" % dataset_root)
+        raise ValueError(
+            "No annotation rows were generated from %s using videos from %s"
+            % (dataset_root, videos_dir)
+        )
 
     return pd.DataFrame(rows, columns=OUTPUT_COLUMNS)
 
@@ -87,13 +117,14 @@ def build_annotations_dataframe(dataset_root: Path) -> pd.DataFrame:
 def resolve_default_paths(script_path: Path):
     project_root = script_path.parents[1]
     dataset_root = project_root / "datasets" / "jigsaw"
+    videos_dir = project_root / "videos"
     output_path = project_root / "annotations" / "Custom_Gestures_Annotations.csv"
-    return dataset_root, output_path
+    return dataset_root, videos_dir, output_path
 
 
 def main() -> None:
     script_path = Path(__file__).resolve()
-    default_dataset_root, default_output_path = resolve_default_paths(script_path)
+    default_dataset_root, default_videos_dir, default_output_path = resolve_default_paths(script_path)
 
     parser = argparse.ArgumentParser(
         description="Generate Custom_Gestures_Annotations.csv from JIGSAWS transcription TXT files."
@@ -108,12 +139,18 @@ def main() -> None:
         default=str(default_output_path),
         help="Path for the generated annotation CSV.",
     )
+    parser.add_argument(
+        "--videos-dir",
+        default=str(default_videos_dir),
+        help="Path to the directory containing the custom .mp4 videos used to select transcription files.",
+    )
     args = parser.parse_args()
 
     dataset_root = Path(args.dataset_root).resolve()
+    videos_dir = Path(args.videos_dir).resolve()
     output_path = Path(args.output).resolve()
 
-    annotations_df = build_annotations_dataframe(dataset_root)
+    annotations_df = build_annotations_dataframe(dataset_root, videos_dir)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     annotations_df.to_csv(output_path, index=False)
 

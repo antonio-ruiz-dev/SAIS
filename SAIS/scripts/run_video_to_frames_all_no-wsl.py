@@ -1,5 +1,6 @@
 import argparse
 import subprocess
+import time
 from pathlib import Path
 
 
@@ -21,6 +22,13 @@ def run_video_to_frames(video_path: Path, output_dir: Path, frame_pattern: str =
     print(f"Running: {' '.join(cmd)}")
     completed = subprocess.run(cmd, check=False)
     return completed.returncode
+
+
+def format_elapsed_time(total_seconds: float) -> str:
+    """Format elapsed seconds as HH:MM:SS.ss."""
+    hours, remainder = divmod(total_seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    return f"{int(hours):02d}:{int(minutes):02d}:{seconds:05.2f}"
 
 
 def main() -> None:
@@ -70,6 +78,7 @@ def main() -> None:
         return
 
     failures = []
+    start_time = time.perf_counter()
     for idx, mp4_file in enumerate(mp4_files, 1):
         # Create a subdirectory for each video's frames (optional)
         video_output_dir = output_base_dir / mp4_file.stem
@@ -90,10 +99,13 @@ def main() -> None:
         else:
             print(f"  ✓ Success: {mp4_file.name}")
 
+    elapsed_time = time.perf_counter() - start_time
+
     total = len(mp4_files)
     
     if args.dry_run:
         print(f"\nDry-run complete. Planned to process: {total} video(s)")
+        print(f"Total time taken: {format_elapsed_time(elapsed_time)}")
         return
 
     print("\n" + "="*60)
@@ -103,6 +115,7 @@ def main() -> None:
             print(f"  - {video_name.name}: exit code {code}")
     else:
         print(f"✓ Completed successfully: {total} video(s) processed")
+    print(f"Total time taken: {format_elapsed_time(elapsed_time)}")
     print("="*60)
 
 
