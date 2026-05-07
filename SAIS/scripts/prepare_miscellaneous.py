@@ -147,8 +147,8 @@ def calcNCEMetrics(rank,snip_sequence_list,labels_list,videoname_list,gesture_pr
         s_labels = list(map(lambda tup:tup[1],zip(sides,labels))) #e.g. 0L, 2R, etc
         # print('Video sides + labels: %s' % s_labels)
         s_labels = np.repeat(np.expand_dims(np.array(s_labels),1),p.shape[0],axis=1) # nbatch x nprototypes
-        #print('side labels repeated across prototypes: %s' % s_labels)
-        print(p_labels,s_labels)
+        # print('side labels repeated across prototypes: %s' % s_labels)
+        # print(p_labels,s_labels)
         labels = torch.tensor(np.argmax(p_labels == s_labels,1))
         #print('Prototype labels: %s' % p_labels)
         #print('Side + label matches with prototypes: %s' % (p_labels == s_labels))      

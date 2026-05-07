@@ -357,8 +357,8 @@ def extractSegmentations(rank,world_size,dataset_list,args):
 
 
 def extractFeatures(rank,world_size,dataset_list,args): 
-    # device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-    device = torch.device('cpu')
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    # device = torch.device('cpu')
     # if torch.cuda.is_available():
     #     backend = 'nccl'
     # else:
@@ -366,7 +366,7 @@ def extractFeatures(rank,world_size,dataset_list,args):
     # dist.init_process_group(backend, rank=rank, world_size=world_size) 
     dataloader = prepareDataloader(rank,world_size,dataset_list,args)
     model = loadModel(rank,world_size,dataset_list[0],args)
-    #model = model.to(device)
+    model = model.to(device)
     model.eval()
     reps_list = []
     labels_list = []
