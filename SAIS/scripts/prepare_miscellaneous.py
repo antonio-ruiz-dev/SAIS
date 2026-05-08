@@ -184,7 +184,9 @@ def calcNCEMetrics(rank,snip_sequence_list,labels_list,videoname_list,gesture_pr
     if nclasses == 2:
         probs = probs[:,-1]
 
-    if phase == 'inference' and len(np.unique(labels)) < 2 and not simulate_single_gesture:
+    phase_name = str(phase).lower() if phase is not None else ''
+    is_inference_phase = 'inference' in phase_name
+    if is_inference_phase and len(np.unique(labels)) < 2 and not simulate_single_gesture:
         _mark_single_class_auc_note()
         auc = np.nan
     else:
@@ -226,7 +228,9 @@ def calcMetrics(output_logits_list,labels_list,nclasses,phase=None,simulate_sing
         #if nclasses == 2:
         #    output_probs = output_probs[:,-1]
 
-        if phase == 'inference' and len(np.unique(labels)) < 2 and not simulate_single_gesture:
+        phase_name = str(phase).lower() if phase is not None else ''
+        is_inference_phase = 'inference' in phase_name
+        if is_inference_phase and len(np.unique(labels)) < 2 and not simulate_single_gesture:
             _mark_single_class_auc_note()
             auc = np.nan
         else:
