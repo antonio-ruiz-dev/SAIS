@@ -306,10 +306,13 @@
 		python ./SAIS/scripts/run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 2 -bc -sa -domains in_vs_out -ph Custom_inference -dt reps -e 1 -f 1 --inference
 		python ./SAIS/scripts/run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 2 -bc -sa -domains in_vs_out -ph Custom_inference -dt reps -e 1 -f 1 --inference
 		
+		
 	B. For simulating 1 single gesture (JIGSAWS):
 		python run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 2 -bc -sa -domains in_vs_out -ph Custom_inference -dt reps -e 1 -f 1 --inference --simulate-single-gesture
 		
-		--simulate-single-gesture
+		python .\SAIN\scripts\run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 8 -lr 0.1 -nc 6 -bc -sa -domains Gesture -ph Custom_inference -dt reps -e 1 -f 1 --inference --simulate-single-gesture
+		for G1, G2, G3...gestures:
+		python .\SAIS\scripts\run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 8 -lr 0.1 -nc 6 -bc -sa -domains Gesture -ph Custom_inference -dt reps -e 1 -f 1 --inference --simulate-single-gesture
 		
 		Modalities: RGB-Flow
 		Self Attention: True
@@ -635,3 +638,6 @@
 
 7.	process inference results to generate valid predictions 
 		python ./SAIS/scripts/process_inference_results.py -p ./SAIS/ 	
+		
+		python process_inference_results.py -p ./SAIS/ --dataset Custom --domain Gesture --inference-set Custom_inference --nclasses 6 --folds 0 --entropy-thresh 1.735
+		python .\SAIS\process_inference_results.py -p ./SAIS/ --dataset Custom --domain Gesture --inference-set Custom_inference --nclasses 6 --folds 0 --entropy-thresh 1.735

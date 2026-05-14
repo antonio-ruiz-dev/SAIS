@@ -4,8 +4,12 @@ import time
 from pathlib import Path
 
 
-def run_video_to_frames(video_path: Path, output_dir: Path, frame_pattern: str = "frame_%08d.jpg") -> int:
-    """Convert a single video to frames using FFmpeg."""
+def run_video_to_frames(video_path: Path, output_dir: Path, frame_pattern: str = "frame_%08d.jpg") -> tuple:
+    """Convert a single video to frames using FFmpeg.
+    
+    Returns:
+        tuple: (return_code, frame_count) where frame_count is -1 if conversion failed
+    """
     
     # Ensure output directory exists
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -21,7 +25,13 @@ def run_video_to_frames(video_path: Path, output_dir: Path, frame_pattern: str =
     
     print(f"Running: {' '.join(cmd)}")
     completed = subprocess.run(cmd, check=False)
-    return completed.returncode
+    
+    # Count generated frames if conversion was successful
+    frame_count = -1
+    if completed.returncode == 0:
+        frame_count = len(list(output_dir.glob("frame_*.jpg")))
+    
+    return completed.returncode, frame_count
 
 
 def format_elapsed_time(total_seconds: float) -> str:
@@ -90,14 +100,14 @@ def main() -> None:
             print(f"  [DRY-RUN] {cmd_preview}")
             continue
 
-        code = run_video_to_frames(mp4_file, video_output_dir, args.frame_pattern)
+        code, frame_count = run_video_to_frames(mp4_file, video_output_dir, args.frame_pattern)
         if code != 0:
             failures.append((mp4_file, code))
             print(f"  ✗ Failed: {mp4_file.name} (exit code: {code})")
             if not args.continue_on_error:
                 break
         else:
-            print(f"  ✓ Success: {mp4_file.name}")
+            print(f"  ✓ Success: {mp4_file.stem}: {frame_count}")
 
     elapsed_time = time.perf_counter() - start_time
 

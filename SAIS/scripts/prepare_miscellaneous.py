@@ -12,6 +12,7 @@ from tabulate import tabulate
 from sklearn.metrics import roc_auc_score, precision_score, recall_score
 
 _AUC_SINGLE_CLASS_NOTE = False
+_AUC_SIMULATED_NOTE = False
 
 
 def _mark_single_class_auc_note():
@@ -19,11 +20,49 @@ def _mark_single_class_auc_note():
         _AUC_SINGLE_CLASS_NOTE = True
 
 
+def _mark_simulated_auc_note():
+        global _AUC_SIMULATED_NOTE
+        _AUC_SIMULATED_NOTE = True
+
+
 def _is_nan(value):
         try:
                 return np.isnan(value)
         except:
                 return False
+
+
+def _compute_auc_with_single_class_support(labels, probs, is_inference_phase, simulate_single_gesture):
+    unique_labels = np.unique(labels)
+    if is_inference_phase and len(unique_labels) < 2:
+        if not simulate_single_gesture:
+            _mark_single_class_auc_note()
+            return np.nan
+
+        present_class = int(unique_labels[0])
+        _mark_simulated_auc_note()
+        if np.ndim(probs) == 1:
+            synthetic_label = 1 - present_class
+            # Use mean of real scores so synthetic sample doesn't perfectly separate
+            synthetic_score = float(np.mean(probs))
+            labels_aug = np.concatenate((labels, np.array([synthetic_label])))
+            probs_aug = np.concatenate((probs, np.array([synthetic_score])))
+            return roc_auc_score(labels_aug, probs_aug)
+
+        nclasses = probs.shape[1]
+        synthetic_label = (present_class + 1) % nclasses
+        # Use per-class mean probabilities so synthetic sample doesn't perfectly separate
+        synthetic_probs = np.mean(probs, axis=0).astype(probs.dtype)
+        labels_aug = np.concatenate((labels, np.array([synthetic_label])))
+        probs_aug = np.vstack((probs, synthetic_probs))
+
+        if nclasses == 2:
+            return roc_auc_score(labels_aug, probs_aug[:, -1])
+        return roc_auc_score(labels_aug, probs_aug, multi_class='ovr')
+
+    if np.ndim(probs) == 1:
+        return roc_auc_score(labels, probs)
+    return roc_auc_score(labels, probs, multi_class='ovr')
 
 def calcNCELoss(rank,snip_sequence,labels,videoname,gesture_prototypes,domains):
     """ Prepare Prototypes """
@@ -34,6 +73,7 @@ def calcNCELoss(rank,snip_sequence,labels,videoname,gesture_prototypes,domains):
     #     p_norm = p_norm.to(rank)
     # else:
     p_norm = p_norm.to('cpu')
+
     p_labels = list(gesture_prototypes.keys()) # 0, 1, ... , nclasses,
     p_labels = np.repeat(np.expand_dims(np.array(p_labels),0),snip_sequence.shape[0],axis=0) # nbatch x nprototypes
     """ Prepare Video Representations """
@@ -60,7 +100,7 @@ def calcNCELoss(rank,snip_sequence,labels,videoname,gesture_prototypes,domains):
     #print('In calcCELoss -> Denominators: %s' % dens)
     loss = -torch.mean(torch.log(nums/dens)) # scalar
 
-    #print('In calcCELoss -> Loss: %s' % loss)
+    print(f'ARZ:: In calcCELoss -> Loss: %s' % loss)
     return loss
 
 def calcImportanceLoss(output_importances,importances,ipad,labels):
@@ -178,23 +218,21 @@ def calcNCEMetrics(rank,snip_sequence_list,labels_list,videoname_list,gesture_pr
     labels,probs = labels.cpu().detach().numpy(), probs.cpu().detach().numpy()
     preds = preds.numpy()
     #print(labels,preds)
-    prec = precision_score(labels,preds,average='macro', zero_division=0)
-    rec = recall_score(labels,preds,average='macro', zero_division=0)
+    phase_name = str(phase).lower() if phase is not None else ''
+    is_inference_phase = 'inference' in phase_name
+    present_labels = np.unique(labels) if (is_inference_phase and simulate_single_gesture) else None
+    prec = precision_score(labels,preds,average='macro', zero_division=0, labels=present_labels)
+    rec = recall_score(labels,preds,average='macro', zero_division=0, labels=present_labels)
     nclasses = len(gesture_prototypes)
     if nclasses == 2:
         probs = probs[:,-1]
 
-    phase_name = str(phase).lower() if phase is not None else ''
-    is_inference_phase = 'inference' in phase_name
-    if is_inference_phase and len(np.unique(labels)) < 2 and not simulate_single_gesture:
-        _mark_single_class_auc_note()
+    # print(f'ARZ:: Calculating AUC for phase: {phase_name} with labels: {labels} and probs: {probs}'   )
+    try:
+        auc = _compute_auc_with_single_class_support(labels, probs, is_inference_phase, simulate_single_gesture)
+    except:
         auc = np.nan
-    else:
-        try:
-            auc = roc_auc_score(labels,probs,multi_class='ovr')
-        except:
-            auc = np.nan
-
+    #print(f'ARZ::: In prepare_mischellaneous ==> acc: {acc}, auc: {auc}, prec: {prec}, rec: {rec}')  
     return acc, auc, prec, rec
 
 
@@ -223,25 +261,24 @@ def calcMetrics(output_logits_list,labels_list,nclasses,phase=None,simulate_sing
         
         preds = preds.cpu().detach().numpy()
         labels, output_probs = labels.cpu().detach().numpy(),output_probs.cpu().detach().numpy()
-        prec = precision_score(labels,preds,average='macro', zero_division=0)
-        rec = recall_score(labels,preds,average='macro', zero_division=0)
+        phase_name = str(phase).lower() if phase is not None else ''
+        is_inference_phase = 'inference' in phase_name
+        present_labels = np.unique(labels) if (is_inference_phase and simulate_single_gesture) else None
+        prec = precision_score(labels,preds,average='macro', zero_division=0, labels=present_labels)
+        rec = recall_score(labels,preds,average='macro', zero_division=0, labels=present_labels)
         #if nclasses == 2:
         #    output_probs = output_probs[:,-1]
 
-        phase_name = str(phase).lower() if phase is not None else ''
-        is_inference_phase = 'inference' in phase_name
-        if is_inference_phase and len(np.unique(labels)) < 2 and not simulate_single_gesture:
-            _mark_single_class_auc_note()
+        # print(f'ARZ:: Calculating AUC for phase: {phase_name} with labels: {labels} and probs: {output_probs}'   )
+        try:
+            auc = _compute_auc_with_single_class_support(labels, output_probs, is_inference_phase, simulate_single_gesture)
+        except:
             auc = np.nan
-        else:
-            try:
-                auc = roc_auc_score(labels,output_probs,multi_class='ovr')
-            except:
-                auc = np.nan
+        #print(f'ARZ::: In prepare_mischellanewus ==> acc: {acc}, auc: {auc}, prec: {prec}, rec: {rec}')    
         return acc, auc, prec, rec
 
 def printMetrics(phase,metrics):
-        global _AUC_SINGLE_CLASS_NOTE
+        global _AUC_SINGLE_CLASS_NOTE, _AUC_SIMULATED_NOTE
         metric_names = list(metrics.keys())
         metric_values = list(metrics.values())
         
@@ -251,12 +288,20 @@ def printMetrics(phase,metrics):
                 '*' if name.endswith('_auc') else '%.3f' % value
                 for name, value in zip(metric_names,metric_values)
             ]
+        elif _AUC_SIMULATED_NOTE and 'auc' in metrics:
+            metric_values = [
+                '~%.3f' % value if name.endswith('_auc') else '%.3f' % value
+                for name, value in zip(metric_names,metric_values)
+            ]
         else:
             metric_values = list(map(lambda value: '%.3f' % value,metric_values))
         print(tabulate([metric_names,metric_values],headers='firstrow'))
         if _AUC_SINGLE_CLASS_NOTE:
             print('* AUC not computed: only one class is present in y_true for this phase.')
             _AUC_SINGLE_CLASS_NOTE = False
+        if _AUC_SIMULATED_NOTE:
+            print('~ AUC estimated using a synthetic counter-class sample (mean probability score) because only one class is present in y_true.')
+            _AUC_SIMULATED_NOTE = False
 
 def trackMetrics(metrics,metrics_dict):
         for name,value in metrics.items():
@@ -275,7 +320,7 @@ def calcTemporalCoherenceLoss(output_logits,output_logits_flipped):
 #       criterion = nn.BCEWithLogitsLoss()
 #       lossA = criterion(output_logits,torch.zeros(output_logits.shape[0],1,dtype=torch.float))
 #       lossB = criterion(output_logits_flipped,torch.ones(output_logits.shape[0],1,dtype=torch.float))
-
+        # print(f'ARZ::: In calcTemporalCoherenceLoss ==> output_logits: {output_logits}, output_logits_flipped: {output_logits_flipped}')
         criterion = nn.CrossEntropyLoss()       
         lossA = criterion(output_logits,torch.zeros(output_logits.shape[0],dtype=torch.long))
         lossB = criterion(output_logits_flipped,torch.ones(output_logits.shape[0],dtype=torch.long))
@@ -301,6 +346,7 @@ def calcTemporalCoherenceAcc(output_logits_list,output_logits_flipped_list):
         countA = torch.sum(predsA == labelsA)
         countB = torch.sum(predsB == labelsB)
         acc = (countA + countB ) / (predsA.shape[0] + predsB.shape[0]) 
+        # print(f'ARZ::: In calcTemporalCoherenceAcc ==> predsA: {predsA}, labelsA: {labelsA}, predsB: {predsB}, labelsB: {labelsB}, acc: {acc}')
         return acc
 
 

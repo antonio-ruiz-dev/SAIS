@@ -750,7 +750,7 @@ class VideoDataset(Dataset):
                             train_df (pd.DataFrame)
                             val_df (pd.DataFrame)
                         """
-
+                        print(f'ARZ:In prepare_dataset.py - obtain_train_val_split: Obtaining {kind}-level Train/Val/Test Split ... ')
                         if kind == 'Video':
                             train_df = pd.DataFrame()
                             val_df = pd.DataFrame()
@@ -1832,6 +1832,28 @@ class VideoDataset(Dataset):
 
                         if df.empty:
                             raise ValueError('No Custom_Gestures classes remain after filtering. Verify annotations and extracted representations.')
+
+                        # Apply domain-based gesture filtering (e.g., Custom_Top15 for G1-G15)
+                        if self.domain == 'Custom_Top15':
+                            custom_top15_gestures = ['G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G7', 'G8', 'G9', 'G10', 'G11', 'G12', 'G13', 'G14', 'G15']
+                            gestures_in_data = set(df['Gesture'].unique().tolist())
+                            available_gestures = [g for g in custom_top15_gestures if g in gestures_in_data]
+                            if not available_gestures:
+                                raise ValueError('Custom_Top15 domain requires gestures G1-G15, but none found in annotations.')
+                            print('Limiting Custom_Gestures to Custom_Top15 preset: %s' % available_gestures)
+                            df = df[df['Gesture'].isin(available_gestures)]
+                        elif self.domain and 'vs' in self.domain:
+                            # Support binary comparisons like G1_vs_G2
+                            gestures = self.domain.split('_vs_')
+                            gestures_in_data = set(df['Gesture'].unique().tolist())
+                            available_gestures = [g for g in gestures if g in gestures_in_data]
+                            if len(available_gestures) < 2:
+                                raise ValueError('Domain %s requires both gestures present in annotations.' % self.domain)
+                            print('Limiting Custom_Gestures to binary domain: %s' % available_gestures)
+                            df = df[df['Gesture'].isin(available_gestures)]
+
+                        if df.empty:
+                            raise ValueError('No Custom_Gestures classes remain after domain filtering. Verify annotations.')
 
                         self.label_encoder = label_encoder.fit(sorted(df['Gesture'].unique().tolist()))
                         df['Domain'] = self.domain
