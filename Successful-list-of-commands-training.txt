@@ -439,8 +439,7 @@ python -m torch.distributed.launch --nproc_per_node=1 SAIS/scripts/run_experimen
 9.	Train model (Use gesture instead)
 		A. Out-of-the box was in_vs_out for domains:
 			python ./SAIS/scripts/run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 2 -bc -sa -domains in_vs_out -ph train val test -dt reps -e 50 -f 8 
-			python ./SAIS/scripts/run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom_Top15 -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 15 -bc -sa -domains Custom_Top15 -ph train val test -dt reps -e 50 -f 8
-		
+			
 			________________________________________________________________________
 			|  test_loss    test_acc    test_auc    test_precision    test_recall	|
 			|-----------  ----------  ----------  ----------------  ----------------|
@@ -450,8 +449,7 @@ python -m torch.distributed.launch --nproc_per_node=1 SAIS/scripts/run_experimen
 			Time taken (s): 1067.361
 			
 		B. Custom domain 
-			python ./SAIS/scripts/run_experiments.py -p ./SAIS/ -d Custom_Gestures -domains Custom_Top15 -ph train val test -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 15 -bc -sa -dt reps -e 50 -f 8
-
+			python ./SAIS/scripts/run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom_Top15 -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 15 -bc -sa -domains Custom_Top15 -ph train val test -dt reps -e 50 -f 8
 			Searched codebase for "make modifications to use Custom_Gestures, so modify  so it accepts a new domain preset similar to top4 that trains  15 classes at one time G1,G2,G3, ...G15, According to the following table: Gesture index Gesture description
 			G1 Reaching for needle with right hand
 			G2 Positioning needle

@@ -218,7 +218,13 @@ class fullModel(nn.Module):
             key_padding_mask = pad.view(nbatch*nsnippets,nframes) # B*nsnippets x nframes (different from snip_sequence dimension order on purpose) 
             #print(snip_sequence.shape,key_padding_mask.shape) 
             ### END ###
-            snip_reps, attn = self.transEncoderFrame(snip_sequence,src_key_padding_mask=key_padding_mask) # nframes x B*nsnippets x D
+            encoder_out = self.transEncoderFrame(snip_sequence,src_key_padding_mask=key_padding_mask) # nframes x B*nsnippets x D
+            if isinstance(encoder_out, tuple):
+                snip_reps = encoder_out[0]
+                attn = encoder_out[1] if len(encoder_out) > 1 else torch.ones(1,1,device=snip_reps.device)
+            else:
+                snip_reps = encoder_out
+                attn = torch.ones(1,1,device=snip_reps.device)
             #attn = torch.ones(10) # dummy variable for now (until I figure out versioning on Windows)
             snip_reps = self.relu(snip_reps)
             snip_reps = snip_reps.permute(1,0,2) # B*nsnippets x nframes x D
