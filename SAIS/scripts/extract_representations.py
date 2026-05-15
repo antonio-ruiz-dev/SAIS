@@ -15,9 +15,10 @@ import numpy as np
 from operator import itemgetter
 
 import cv2 as cv
-import ptlflow
-from ptlflow.utils import flow_utils
-from ptlflow.utils.io_adapter import IOAdapter
+# Optional optical-flow dependencies are imported lazily for non-flow runs.
+ptlflow = None
+flow_utils = None
+IOAdapter = None
 from collections import OrderedDict
 
 from torch.nn.parallel import DistributedDataParallel as DDP
@@ -34,9 +35,22 @@ warnings.filterwarnings(
     category=UserWarning,
 )
 
+
+def _ensure_ptlflow_imports():
+    global ptlflow, flow_utils, IOAdapter
+    if ptlflow is not None and flow_utils is not None and IOAdapter is not None:
+        return
+    import ptlflow as _ptlflow
+    from ptlflow.utils import flow_utils as _flow_utils
+    from ptlflow.utils.io_adapter import IOAdapter as _IOAdapter
+    ptlflow = _ptlflow
+    flow_utils = _flow_utils
+    IOAdapter = _IOAdapter
+
 class OpticalFlowDataset(torch.utils.data.Dataset):
 
     def __init__(self,rank,world_size,data_path,dataset_list,pid,jump_size,transform='',extract_only=False):
+        _ensure_ptlflow_imports()
         model = ptlflow.get_model('raft', pretrained_ckpt='things')
         self.model = model #just for IO Adapter stuff
         #model.to(rank)
@@ -226,6 +240,7 @@ def loadModel(rank,world_size,dataset,args):
     return model
 
 def obtain_flow(model,inputs):
+    _ensure_ptlflow_imports()
     predictions = model(inputs)
     
     key1,key2 = list(predictions.keys()) #key1 = flows
@@ -270,6 +285,7 @@ def saveFlows(flow_ims,labels,nflows,dataset_list,args):
 
 def extractFlows(rank,world_size,dataset_list,pid,jump_size,args):
     #dist.init_process_group("nccl", rank=rank, world_size=world_size) 
+    _ensure_ptlflow_imports()
     dataloader = prepareDataloader(rank,world_size,dataset_list,args,pid=pid,jump_size=jump_size)
     model = ptlflow.get_model('raft', pretrained_ckpt='things')
     for param in model.parameters(): 

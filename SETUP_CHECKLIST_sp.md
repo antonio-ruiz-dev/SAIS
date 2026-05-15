@@ -78,17 +78,27 @@ python -c "import torch; print(f'CUDA disponible: {torch.cuda.is_available()}');
 nvidia-smi # <-- este comando retorna el driver instalado para la tarjeta de video. Puede, en general ser mas reciente que el kit de CUDA
 nvcc --version
 
-# Este proyecto requiere CUDA 11.1.1 si es mayor se necesita hacer downgrade. Al lfinal se quedó con cuda 12.0 porque hace uso completo de la tarjeta en uso nVidia GeForce RTX 4060
+# Este proyecto requiere CUDA 11.1.1 si es mayor se necesita hacer downgrade. Al lfinal se quedó con cuda 12.1 porque hace uso completo de la tarjeta en uso nVidia GeForce RTX 4060
 
 
 # Si no está instalado CUDA, install
 #Verify CUDA_PATH
 
 # Si no está instalada, arreglar con conda
-conda install pytorch torchvision torchaudio pytorch-cuda=12.0 -c pytorch -c nvidia
+conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
+
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
 # Si aun no registra CUDA, el problema es la version de torch que no tiene soporte para CUDA
 # para cuda 12.6 instalar ptorch 12.6
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+
+# Para nVidia TITAN RTX:
+#pip install torch==1.13.1+cu121 torchvision==0.14.1+cu121 -f https://pytorch.org
+
+pip install torch==2.5.0 torchvision==0.20.0 torchaudio==2.5.0 --index-url https://download.pytorch.org/whl/cu121
+
 
 python -c "import torch; print(f'CUDA disponible: {torch.cuda.is_available()}'); print(f'Número de dispositivos: {torch.cuda.device_count()}')"
 CUDA disponible: True
