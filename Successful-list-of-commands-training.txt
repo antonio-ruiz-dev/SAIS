@@ -450,6 +450,107 @@ python -m torch.distributed.launch --nproc_per_node=1 SAIS/scripts/run_experimen
 			
 		B. Custom domain 
 			python ./SAIS/scripts/run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom_Top15 -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 15 -bc -sa -domains Custom_Top15 -ph train val test -dt reps -e 50 -f 8
+			python ./SAIS/scripts/run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom_Top15  -domains Custom_Top15 -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 15 -bc -sa -ph train val test -dt reps -e 50 -f 8
+	
+			Actual run:
+			python ./SAIS/scripts/run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom_Top15 -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 15 -bc -sa -domains Custom_Top15 -ph train val test -dt reps -e 50 -f 8
+			
+			Accepted -enc/--encoder_params values (as enforced by CLI choices) are:
+
+			ViT_SelfSupervised_ImageNet
+			ViT_SelfSupervised_SurgicalVideoNet
+			ViT_SelfSupervised_USC_NSVideoNet
+			Kinetics
+			ViT_SelfSupervised_VUAVideoNet
+			
+			I’ll extract the full parser block from run_experiments.py and build a compact table listing each argument, type, defaults, and accepted values/format.
+
+
+		Yes. Here is a full argument table from run_experiments.py.
+
+		| Argument 					| Type 					| Default 						| Possible values 		|
+		|---------------------------|-----------------------|----------------------:		|-----------------------|
+		| -p, --path 				| str 					| None 							| Any valid path string |
+		| -data, --dataset_name 	| str 					| None 							| VUA_EASE, VUA_EASE_Stitch, NS_DART, NS_Gestures_Classification, VUA_Gestures_Classification, DVC_UCL_Gestures_Classification, JIGSAWS_Suturing_Gestures_Classification, NS_vs_VUA, CinVivo_OutView, Custom_Gestures |
+		| -d, --domain_name 		| str 					| None 							| Any string (used for naming result path folders) |
+		| -m, --model 				| str 					| R3D 							| Any string accepted by downstream model loader (commonly R3D or ViT) |
+		| -enc, --encoder_params	| str 					| ViT_SelfSupervised_ImageNet 	| ViT_SelfSupervised_ImageNet, ViT_SelfSupervised_SurgicalVideoNet, ViT_SelfSupervised_USC_NSVideoNet, Kinetics, ViT_SelfSupervised_VUAVideoNet |
+		| -dim, --rep_dim 			| int 					| 512 							| Any integer 			|
+		| -mod, --modalities 		| str 					| None 							| Any string (commonly RGB, Flow, RGB-Flow) |
+		| -bs, --batch_size 		| int 					| 1 							| Any integer > 0 		|
+		| -lr, --learning_rate 		| float 				| None 							| Any float 			|
+		| -tf, --training_fraction 	| float 				| 1 							| Any float (help suggests range [0,1]) |
+		| -fe, --freeze_encoder 	| store_true flag 		| False 						| False (not passed) or True (flag passed) |
+		| -t, --task 				| str 					| None 							| Any string (commonly Prototypes, MIL, etc. depending on downstream code) |
+		| -nc, --nclasses 			| int 					| None 							| Any integer 			|
+		| -bc, --balance_classes	| store_true flag 		| False 						| False or True 		|
+		| -bg, --balance_groups 	| store_true flag 		| False 						| False or True 		|
+		| -sg, --single_group 		| store_true flag 		| False 						| False or True 		|
+		| -sa, --self_attention 	| store_true flag 		| False 						| False or True 		|
+		| -il, --importance_loss	| store_true flag 		| False 						| False or True 		|
+		| -domains, --domains 		| list of str (nargs +)	| None 							| One or more strings, e.g. Custom_Top15, G1_vs_G2, NH_02 |
+		| -ph, --phases				| list of str (nargs +)	| None 							| One or more strings, e.g. train val test |
+		| -dt, --data_type 			| str 					| None 							| Any string (commonly raw or reps) |
+		| -e, --nepochs 			| int 					| None 							| Any integer 			|
+		| -f, --nfolds	 			| int 					| None 							| Any integer 			|
+		| -i, --inference 			| store_true flag 		| False 						| False or True 		|
+		| --simulate-single-gesture	| store_true flag 		| False 						| False or True 		|
+		| --local_rank 				| int 					| 0 							| Any integer 			|
+
+		I’ll quickly scan the training pipeline scripts and README command files so I can tell you exactly what else is typically run before or after run_experiments.py for training.
+
+Searched for regex `run_experiments.py|train.py|extract|reps|prepare_dataset|main.sh|training` (`**/README*.md`), 43 results
+
+Searched for text `if __name__ == '__main__'` (`**/SAIS/scripts/*.py`), 5 results
+
+Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts)
+
+I found the executable scripts; now I’ll verify the exact training sequence (`paths/frames -> features -> run_experiments`) so I can tell you which ones are actually needed versus optional utilities.
+
+Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/extract_representations.py#489-489), lines 489 to 538
+
+Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/run_experiments.py)
+
+Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/main.sh)
+
+I confirmed the flow. I’ll do one quick check of train.py and `perform_training.py` to distinguish scripts you should run directly from internal modules called by run_experiments.py.
+
+Searched for text `if __name__ == '__main__'` (`**/SAIS/scripts/train.py|SAIS/scripts/perform_training.py`), no results
+
+Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/perform_training.py#1-1), lines 1 to 80
+
+Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/train.py#1-1), lines 1 to 120
+
+Yes, usually there is at least one more step besides run_experiments.py, depending on your data type.
+
+For training, the practical pipeline is:
+
+1. Prepare frame/flow paths (if starting from videos):
+generate_paths.py
+
+2. Extract representations (required if training with `-dt reps`):
+extract_representations.py
+
+3. Run training:
+run_experiments.py
+
+What is not typically run directly for training:
+- train.py: called internally by run_experiments.py
+- perform_training.py: called internally by train.py
+- prepare_dataset.py: data loader internals
+- prepare_model.py: model setup internals
+
+If your `results/*_RepsAndLabels.h5` already exist for the encoder you chose, 
+you can skip extraction and run only run_experiments.py. 
+If not, you need extract_representations.py first.
+
+Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/run_experiments.py#18-18), lines 18 to 65
+
+Notes:
+- None means optional at argparse level, but some are effectively required at runtime depending on your training path.
+- The only arguments with strict parser-enforced choices are --dataset_name and --encoder_params.
+			
+			
 			Searched codebase for "make modifications to use Custom_Gestures, so modify  so it accepts a new domain preset similar to top4 that trains  15 classes at one time G1,G2,G3, ...G15, According to the following table: Gesture index Gesture description
 			G1 Reaching for needle with right hand
 			G2 Positioning needle
@@ -630,10 +731,15 @@ python -m torch.distributed.launch --nproc_per_node=1 SAIS/scripts/run_experimen
 	Opens two H5 files:
 	ViT_SelfSupervised_ImageNet_RepsAndLabels.h5 (RGB reps)
 	ViT_SelfSupervised_ImageNet_FlowRepsAndLabels.h5 (flow reps)
+	
 	Reads ./SAIS/annotations/Custom_Gestures_Annotations.csv for gesture labels and frame timestamps.
+	
 	Filters annotations to only videos present in both H5 files.
+	
 	Drops gesture classes with fewer than 3 videos.
-	Since -nc 2, keeps only the top 2 most frequent gestures.
+	
+	Since -nc 2, keeps only the top 2 most frequent gestures. <=== this was default, now it is set to 15 for G1–G15
+	
 	Splits per-gesture by video into train (70%) / val (15%) / test (15%) using fold as random seed.
 	Since -bc, balances all three splits by undersampling to the minority class.
 	
@@ -643,7 +749,7 @@ python -m torch.distributed.launch --nproc_per_node=1 SAIS/scripts/run_experimen
 	For val/test, produces 3 offset views of each.
 	Model loaded (prepare_model.py):
 
-	ViT encoder type with rep_dim=384, modalities=RGB-Flow, self_attention=True, nclasses=2, task=Prototypes.
+	ViT encoder type with rep_dim=384, modalities=RGB-Flow, self_attention=True, nclasses=2, task=Prototypes. <== now nc=15
 	A Transformer encoder aggregates frame-level reps, producing video-level representations.
 	Training loop in train.py for up to 50 epochs with early stopping (patience=5):
 
@@ -656,9 +762,9 @@ python -m torch.distributed.launch --nproc_per_node=1 SAIS/scripts/run_experimen
 	reps_and_labels — representations and ground truth labels
 	Prerequisites that must exist before running:
 
-	ViT_SelfSupervised_ImageNet_RepsAndLabels.h5 (from extract_representations.py without --optical_flow)
-	ViT_SelfSupervised_ImageNet_FlowRepsAndLabels.h5 (from extract_representations.py with --optical_flow_to_reps)
-	Custom_Gestures_Annotations.csv
+		ViT_SelfSupervised_ImageNet_RepsAndLabels.h5 (from extract_representations.py without --optical_flow)
+		ViT_SelfSupervised_ImageNet_FlowRepsAndLabels.h5 (from extract_representations.py with --optical_flow_to_reps)
+		Custom_Gestures_Annotations.csv
 
 
 	
@@ -674,7 +780,7 @@ python -m torch.distributed.launch --nproc_per_node=1 SAIS/scripts/run_experimen
 
 	Things worth checking for improvement:
 
-		More folds — you ran 8, so averaging across folds would give a more stable estimate.
+		More folds — you ran 8, so averaging across folds would give a more stable estimate. <== did not work on my local server at home. I Tried 12 and did not make a difference
 		Class balance — since -bc was set, classes are balanced; if one gesture dominates the raw data, performance on the minority class may be lower than these averages suggest.
 		rep_dim=384 — this matches DINO ViT-small output dimension exactly, so no projection mismatch.
 		

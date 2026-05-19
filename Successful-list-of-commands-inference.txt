@@ -195,6 +195,67 @@
 									flows_00000374.jpg
 	if each flow corresponds to 15 frames jump. it makes sense that 5640 frames, divided by 15 is 376, very close to the reported 374
 	
+	I’ll inspect the argument parser in extract_representations.py and map each flag to its inference role, including which combinations you actually need for Custom inference.
+
+	Searched for regex `add_argument\(|def getArgParser|optical_flow|optical_flow_to_reps|inference` (`**/SAIS/scripts/extract_representations.py`), 20 results
+
+	Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/extract_representations.py#1-1), lines 1 to 170
+
+	Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/extract_representations.py#170-170), lines 170 to 290
+
+	Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/extract_representations.py#489-489), lines 489 to 538
+
+	I have the runtime branches; I’ll now pull the parser function lines so the explanation matches each flag exactly and avoids guessing.
+
+	Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/extract_representations.py#430-430), lines 430 to 470
+
+	Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/extract_representations.py#390-390), lines 390 to 430
+
+	I’m doing one last pass for how flow-to-reps and seg-to-reps alter data loading, so I can give you the exact flag combinations for inference preparation.
+
+	Searched for regex `optical_flow_to_reps|segmentation_to_reps|optical_flow == True|segmentation == True` (`**/SAIS/scripts/extract_representations.py`), 8 results
+
+	Read [](file:///c%3A/dev/github/maestria/SAIS/SAIS/scripts/extract_representations.py#172-172), lines 172 to 210
+
+	Searched for regex `class SurgDataset|def __getitem__\(self,idx\):` (`**/SAIS/scripts/extract_representations.py`), 1 result
+
+	Yes. For inference prep, this script has three modes, controlled by flags in extract_representations.py:
+
+	1. Flow generation mode: --optical_flow
+	2. Segmentation generation mode: --segmentation
+	3. Feature extraction mode: default path when neither of the above is set
+
+	Parser definition is in extract_representations.py.
+
+	### Arguments and what they mean for inference
+
+	| Argument 				| Accepted values 				| Used for inference? 					| What it does |
+	|-------------------	|-------------------------------|-----------------------|--------------	|
+	| --arch 				| vit_tiny, vit_small, vit_base, xcit, deit_tiny, deit_small (+ torchvision/xcit list) | Yes | Backbone architecture for feature extraction model. Defined at extract_representations.py. |
+	| --patch_size 			| int (default 16) 				| Yes 									| ViT patch size for model load/build. extract_representations.py |
+	| --drop_path_rate 		| float (default 0.1) 			| Usually yes 			| Stochastic depth when building model. extract_representations.py |
+	| --model_type 			| ViT_SelfSupervised_ImageNet, ViT_Supervised_ImageNet, ViT_SelfSupervised_SurgicalVideoNet, ViT_SelfSupervised_USC_NSVideoNet, ViT_SelfSupervised_VUAVideoNet | Yes | Chooses weights source and also output filename prefix for saved reps. extract_representations.py, extract_representations.py |
+	| --batch_size_per_gpu 	| int 							| Yes 									| DataLoader batch size. extract_representations.py, extract_representations.py |
+	| --data_path 			| str 							| Yes 									| Root path that contains paths, images, flows, results folders. extract_representations.py |
+	| --data_list 			| one or more dataset names 	| Yes 									| Which dataset(s) to process (for your setup usually Custom). extract_representations.py, extract_representations.py |
+	| --save_type 			| dict or h5 					| Yes 									| Output format. For SAIS pipeline, h5 is typically needed. extract_representations.py, extract_representations.py |
+	| --optical_flow 		| flag 							| Optional (step 1 if using RGB-Flow) 	| Generates and saves flow images from frame pairs. extract_representations.py, extract_representations.py |
+	| --segmentation 		| flag 							| Optional (if segmentation pipeline used)| Generates segmentation images. extract_representations.py, extract_representations.py |
+	| --optical_flow_to_reps| flag 							| Optional (step 3 if using RGB-Flow) 	| Converts existing flow images to feature reps; also changes output suffix to FlowRepsAndLabels.h5. extract_representations.py, extract_representations.py |
+	| --segmentation_to_reps| flag 							| Optional 								| Converts segmentation images to reps; output suffix SegRepsAndLabels.h5. extract_representations.py, extract_representations.py |
+	| --local_rank 			| int 							| Usually yes in distributed launch 	| Rank passed to multiprocessing/distributed helpers. extract_representations.py, extract_representations.py |
+
+	### What you typically run for inference with RGB-Flow
+
+	For your usual inference setup (Prototypes + RGB-Flow), you typically need:
+
+	1. Generate flows: use --optical_flow
+	2. Extract RGB reps: run without --optical_flow, without --optical_flow_to_reps
+	3. Extract flow reps: use --optical_flow_to_reps
+
+	Then run inference in run_experiments.py.
+
+	If you want, I can give you a minimal three-command block tailored exactly to your current Custom_Gestures folder names and encoder choice.
 	
 									
 									
@@ -310,9 +371,36 @@
 	B. For simulating 1 single gesture (JIGSAWS):
 		python run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 2 -bc -sa -domains in_vs_out -ph Custom_inference -dt reps -e 1 -f 1 --inference --simulate-single-gesture
 		
-		python .\SAIN\scripts\run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 8 -lr 0.1 -nc 6 -bc -sa -domains Gesture -ph Custom_inference -dt reps -e 1 -f 1 --inference --simulate-single-gesture
+		python .\SAIS\scripts\run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 8 -lr 0.1 -nc 15 -bc -sa -domains Gesture -ph Custom_inference -dt reps -e 1 -f 1 --inference --simulate-single-gesture
 		for G1, G2, G3...gestures:
-		python .\SAIS\scripts\run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 8 -lr 0.1 -nc 6 -bc -sa -domains Gesture -ph Custom_inference -dt reps -e 1 -f 1 --inference --simulate-single-gesture
+		python .\SAIS\scripts\run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 8 -lr 0.1 -nc 15 -bc -sa -domains Gesture -ph Custom_inference -dt reps -e 1 -f 1 --inference --simulate-single-gesture
+		
+		To run inference on the top 15 gestures, I will modify the script to include the necessary parameters for inference and ensure it targets the top 15 gestures. Here's the plan:
+
+		1. **Set Inference Mode**: Update the script to enable inference (`--inference` flag).
+		2. **Specify Top 15 Gestures**: Ensure the dataset or domain is configured to focus on the top 15 gestures.
+		3. **Adjust Parameters**: Verify that the script uses the correct dataset, model, and other parameters for inference.
+		4. **Run the Script**: Execute the script with the updated parameters.
+
+		I'll first edit the script to include the necessary changes. 
+
+
+
+
+
+
+		````
+
+		````
+		For Top15_Gestures:
+		python .\SAIS\scripts\run_experiments.py -p ./SAIS/ -data Top15_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 8 -lr 0.1 -nc 15 -bc -sa -domains Gesture -ph Custom_inference -dt reps -e 1 -f 1 --inference --simulate-single-gesture
+		
+		python .\SAIS\scripts\run_experiments.py --inference --dataset_name Top15_Gestures --phases test
+		
+		This one worked.
+		python .\SAIS\scripts\run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Top15_Gestures -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 8 -lr 0.1 -nc 15 -bc -sa -domains Gesture -ph Custom_inference -dt reps -e 1 -f 1 --inference --simulate-single-gesture
+
+		Made changes.
 		
 		Modalities: RGB-Flow
 		Self Attention: True
@@ -640,4 +728,5 @@
 		python ./SAIS/scripts/process_inference_results.py -p ./SAIS/ 	
 		
 		python process_inference_results.py -p ./SAIS/ --dataset Custom --domain Gesture --inference-set Custom_inference --nclasses 6 --folds 0 --entropy-thresh 1.735
-		python .\SAIS\process_inference_results.py -p ./SAIS/ --dataset Custom --domain Gesture --inference-set Custom_inference --nclasses 6 --folds 0 --entropy-thresh 1.735
+		python .\SAIS\process_inference_results.py -p ./SAIS/ --dataset Top15_Gestures --domain Gesture --inference-set Custom_inference --nclasses 15 --folds 0 --entropy-thresh 1.735
+		

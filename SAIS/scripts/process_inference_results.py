@@ -18,6 +18,14 @@ def safe_torch_load(path, map_location):
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-p','--path',type=str)
+parser.add_argument('--dataset',type=str,default='Custom')
+parser.add_argument('--domain',type=str,default='in_vs_out')
+parser.add_argument('--inference-set',dest='inference_set',type=str,default='Custom_inference')
+parser.add_argument('--nclasses',type=int,default=2)
+parser.add_argument('--folds',nargs='+',type=int,default=[0])
+parser.add_argument('--entropy-thresh',dest='entropy_thresh',type=float,default=0.66)
+parser.add_argument('--seconds',type=int,default=3)
+parser.add_argument('--binary-thresh',dest='binary_thresh',type=float,default=0.515)
 args = parser.parse_args()
 rootpath = args.path
 
@@ -77,7 +85,10 @@ def loadCustomInferenceData(inference_set):
             inference_df = pd.concat((inference_df,frames_df),axis=0)
         df = inference_df.copy()
     
-    gestures = ['in-view','out-of-view']
+    if args.nclasses == 15 and args.domain.lower() == 'gesture':
+        gestures = ['G%i' % i for i in range(1,16)]
+    else:
+        gestures = ['in-view','out-of-view']
     mapping = dict(zip(np.arange(len(gestures)),sorted(gestures)))
     return df, mapping
 
@@ -127,17 +138,16 @@ def getMetaInfo(probs_df,df,mapping,dataset='Custom',domain='in_vs_out',class_co
     probs_df.index = df.index
     probs_df['Video'] = df['Video']
     
-    if domain == 'in_vs_out':
-        if inference_set == 'Custom_inference':
-            cols = ['StartFrame','EndFrame'] # no gesture label
-            probs_df[cols] = df[cols]
+    if 'StartFrame' in df.columns and 'EndFrame' in df.columns:
+        cols = ['StartFrame','EndFrame']
+        probs_df[cols] = df[cols]
         
     probs_df['pred'] = probs_df['pred'].map(mapping)
     return probs_df
 
 def getPreds(ensemble_df,mapping,threshold=None):
-    ensemble_df['Entropy'] = ensemble_df[class_cols].apply(lambda probs:-np.sum(probs*np.log(probs)),axis=1)
-    if threshold == None:
+    ensemble_df['Entropy'] = ensemble_df[class_cols].apply(lambda probs:-np.sum(probs*np.log(np.clip(probs,1e-12,1.0))),axis=1)
+    if threshold == None or len(class_cols) > 2:
         ensemble_df['pred'] = ensemble_df[class_cols].apply(lambda probs:np.argmax(probs),1) 
     else:
         ensemble_df['pred'] = ensemble_df[class_cols[-1]].apply(lambda prob:int(prob>threshold),1)
@@ -211,13 +221,13 @@ if __name__ == '__main__':
 
     device = 'cpu'
     binarizer = LabelBinarizer()
-    class_cols = [0,1] # needs to be more robust --> function
+    class_cols = list(range(args.nclasses))
     max_class = len(class_cols)
     df = pd.DataFrame()
-    dataset = 'Custom' # NS | CinVivo
-    domain = 'in_vs_out' # Top6 | in_vs_out
-    inference_set = 'Custom_inference' # USC_inference | CinVivo_inference
-    folds = [0]
+    dataset = args.dataset # NS | CinVivo | Custom
+    domain = args.domain # Top6 | in_vs_out | Gesture
+    inference_set = args.inference_set # USC_inference | CinVivo_inference | Custom_inference
+    folds = args.folds
     df_inf, mapping = loadCustomInferenceData(inference_set)
     for fold in tqdm(folds):
         #savepath = getSavepath(rootpath,dataset,task,domain,encoder_params,balance,self_attention,modalities,fold,balance_groups,single_group,group_info,importance_loss)
@@ -235,11 +245,14 @@ if __name__ == '__main__':
     ensemble_meta_df = df[df['Fold']==0][meta_cols].reset_index(drop=True)
     ensemble_df = pd.concat((ensemble_probs_df,ensemble_meta_df),axis=1)
     print(ensemble_df)
-    ensemble_df = getPreds(ensemble_df,mapping,threshold=0.515)
+    if len(class_cols) == 2:
+        ensemble_df = getPreds(ensemble_df,mapping,threshold=args.binary_thresh)
+    else:
+        ensemble_df = getPreds(ensemble_df,mapping,threshold=None)
 
     # Define hyperparameters for post-processing of ensembled results
-    seconds = 3 # time between valid gesture predictions which imply SAME gesture # 2
-    entropy_thresh = 0.66 # 1.735 for 6-way gesture classification
+    seconds = args.seconds # time between valid gesture predictions which imply SAME gesture
+    entropy_thresh = args.entropy_thresh
 
     # Process ensembled results to get predictions
     all_gest_df = pd.DataFrame()
@@ -263,7 +276,7 @@ if __name__ == '__main__':
     all_gest_df['Path'] = all_gest_df['Video'].apply(lambda video:os.path.join('images',video))
     if not os.path.exists(os.path.join(args.path,'results')):
         os.makedirs(os.path.join(args.path,'results'))
-    all_gest_df.to_csv(os.path.join(args.path,'results/Custom_inference_gestures.csv'))
+    all_gest_df.to_csv(os.path.join(args.path,'results/%s_gestures.csv' % inference_set))
 
     diff = time.time() - starttime
     print("Time taken (s): %.3f" % diff)
