@@ -67,32 +67,12 @@ def single_epoch(rank,world_size,dataloader,model_dict,optimizer,device,phase,nc
         attention_dict = dict()
         ave_loss = 0
         running_loss = 0
+        class_counts = {}
         batch = 1
         for videoname, snippets, flows, importances, labels, xlens, flens, xpad, fpad, ipad, domains in tqdm(dataloader[phase]):
                 #print([s.shape for s in snippets])
-                # if torch.cuda.is_available():
-                #     """ GPU """
-                #     if isinstance(snippets,dict):
-                #         snippets = [snippet.to(rank) for snippet in snippets.values()]
-                #         xpad = [xpad_el.to(rank) for xpad_el in xpad.values()]
-                #         xlens = [xlens_el for xlens_el in xlens.values()]
+                # JARZ: this is a bit of a mess, but it is to accomodate the fact that for TTA we have lists of tensors instead of single tensors.
 
-                #         flows = [flow.to(rank) for flow in flows.values()]
-                #         fpad = [fpad_el.to(rank) for fpad_el in fpad.values()]
-                #         flens = [flens_el for flens_el in flens.values()]
-                        
-                #         #importances = [importance.to(rank) for importance in importances.values()]
-                #         #ipad = [ipad_el.to(rank) for ipad_el in ipad.values()]
-                #     else:
-                #         snippets = snippets.to(rank)
-                #         xpad = xpad.to(rank)
-                #         fpad = fpad.to(rank)
-                #         ipad = ipad.to(rank)
-                #         flows = flows.to(rank)
-                #         importances = importances.to(rank)
-                #     labels = labels.to(rank)
-                # else:
-                """ CPU """
                 if isinstance(snippets,dict):
                     snippets = [snippet.to(device) for snippet in snippets.values()]
                     xpad = [xpad_el.to(device) for xpad_el in xpad.values()]
@@ -105,8 +85,14 @@ def single_epoch(rank,world_size,dataloader,model_dict,optimizer,device,phase,nc
                     snippets = snippets.to(device)
                     xpad = xpad.to(device)
                     fpad = fpad.to(device)
+                    ipad = ipad.to(device)
                     flows = flows.to(device)
+                    importances = importances.to(device)
                 labels = labels.to(device)
+                batch_labels = labels.detach().view(-1).to('cpu').to(torch.long)
+                unique_labels, unique_counts = torch.unique(batch_labels, return_counts=True)
+                for label, count in zip(unique_labels.tolist(), unique_counts.tolist()):
+                    class_counts[label] = class_counts.get(label, 0) + count
                 
                 with torch.set_grad_enabled(phase=='train'):
                         if task == 'MIL':
@@ -202,21 +188,28 @@ def single_epoch(rank,world_size,dataloader,model_dict,optimizer,device,phase,nc
                 
                 #if batch == 3:
                 #    break
-        
+        print(f'ARZ: In single_epoch Rank {rank} - {phase} - running_loss: {running_loss} - dataset_len: {len(dataloader[phase].dataset)}')
+        #print(f'ARZ: dataloader[phase].dataset: {dataloader[phase].dataset}') 
         ave_loss = running_loss / (len(dataloader[phase].dataset))
+        print(f'ARZ: In single_epoch Rank {rank} - {phase} - loss: {ave_loss}')
         if task == 'MIL':
             acc, auc, prec, rec = calcMetrics(output_logits_list,labels_list,nclasses,phase=phase,simulate_single_gesture=simulate_single_gesture)
         elif task == 'Prototypes':
             if phase == 'inference':
+                print(f'ARZ: In single_epoch Rank {rank} - Prototype Inference - skipping metric calculation!!! why???')
                 acc, auc, prec, rec = 0, 0, 0, 0
             else:
+                print(f'ARZ: In single_epoch Rank {rank} - Prototype {phase} - calculating metrics!!!')
                 if isinstance(snip_sequence,list):
                     snip_sequence_list = (snip_sequence_list,snip_sequence2_list,snip_sequence3_list)
+                #print(f'ARZ: In single_epoch Rank {rank} - Prototype {phase} - calculating metrics!!! snip_sequence_list len: {[len(snip_sequence_el) for snip_sequence_el in snip_sequence_list]}')    
+                #print(f'ARZ: In single_epoch Rank {rank} - Prototype {phase} - snip_sequence_list: {snip_sequence_list}')
                 acc, auc, prec, rec = calcNCEMetrics(rank,snip_sequence_list,labels_list,videoname_list,model_dict['prototypes'],phase=phase,simulate_single_gesture=simulate_single_gesture)
         elif task == 'ClassificationHead':
             if phase in ['inference','USC_inference']:
                 if isinstance(snip_sequence,list):
                     output_logits_list = (output_logits_list,output_logits2_list,output_logits3_list)
+                print(f'ARZ: In single_epoch Rank {rank} - ClassificationHead Inference - skipping metric calculation!!! why???')
                 acc, auc, prec, rec = 0, 0, 0, 0
             else:
                 if isinstance(snip_sequence,list):
@@ -224,6 +217,7 @@ def single_epoch(rank,world_size,dataloader,model_dict,optimizer,device,phase,nc
                 acc, auc, prec, rec = calcMetrics(output_logits_list,labels_list,nclasses,phase=phase,simulate_single_gesture=simulate_single_gesture)
         
         metrics = {'loss':ave_loss,'acc':acc,'auc':auc,'precision':prec,'recall':rec}
-        return metrics, snip_sequence_list, labels_list, videoname_list, attention_list, importance_list, output_logits_list #snippets_dict, attention_dict
+        class_counts = dict(sorted(class_counts.items(), key=lambda pair: pair[0]))
+        return metrics, snip_sequence_list, labels_list, videoname_list, attention_list, importance_list, output_logits_list, class_counts #snippets_dict, attention_dict
 
 

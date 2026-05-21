@@ -756,6 +756,7 @@ class VideoDataset(Dataset):
                             val_df = pd.DataFrame()
                             test_df = pd.DataFrame()
                             for gesture in sorted(df['Gesture'].unique().tolist()):
+                                print
                                 curr_df = df[df['Gesture'] == gesture]
                                 vids = curr_df['Video'].unique().tolist()
                                 nvids = len(vids)
@@ -1625,6 +1626,7 @@ class VideoDataset(Dataset):
                     self.hf_of = hf_of
                 elif self.dataset_name in ['Custom_Gestures']:
                     def balance_gestures(df):
+                        print(f'Handling')
                         gestures = df['Gesture'].unique().tolist()
                         min_class_amount = df['Gesture'].value_counts().min()
                         balanced_df = pd.DataFrame()

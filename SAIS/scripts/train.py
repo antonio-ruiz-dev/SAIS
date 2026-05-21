@@ -68,8 +68,9 @@ def trainModel(rank,world_size,root_path,savepath,dataset_name,data_type,batch_s
                                 videonames_dict[phase] = videonames
                                 labels_dict[phase] = labels
                         else:
-                                metrics, snippets, labels, videonames, attention, importance, logits = single_epoch(rank,world_size,dataloader,model,optimizer,device,phase,nclasses,task,importance_loss,simulate_single_gesture)
+                                metrics, snippets, labels, videonames, attention, importance, logits, class_counts = single_epoch(rank,world_size,dataloader,model,optimizer,device,phase,nclasses,task,importance_loss,simulate_single_gesture)
                                 printMetrics(phase,metrics)
+                                print('%s_class_counts: %s' % (phase,class_counts))
                                 #writer.add_scalar('loss/%s' % phase,metrics['loss'],epoch_count)
 
 

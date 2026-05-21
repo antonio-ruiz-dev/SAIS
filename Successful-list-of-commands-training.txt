@@ -254,21 +254,77 @@ python -m torch.distributed.launch --nproc_per_node=1 SAIS/scripts/run_experimen
 6. Extract representations (Flow maps) -optical flow-
 	python ./SAIS/scripts/extract_representations.py --arch vit_small --patch_size 16 --model_type ViT_SelfSupervised_ImageNet --batch_size_per_gpu 2 --data_path ./SAIS/ --data_list 'Custom' --save_type h5 --optical_flow
 	
-		Lets use 1 GPUs!
-		100%|████████████████████████████████████████████████████████████████████████████████| 125/125 [00:29<00:00,  4.27it/s]
-		All Flows Saved!
-		Suturing_I005_capture1
-		Custom
-		(251, 6)
-		04/29/2026 02:12:21 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
-
-		Lets use 1 GPUs!
-		100%|████████████████████████████████████████████████████████████████████████████████| 126/126 [00:29<00:00,  4.26it/s]
-		All Flows Saved!
-		Suturing_I005_capture2
-		Custom
-		(251, 6)
-		04/29/2026 02:12:51 - WARNING: C:\Users\User\anaconda3\envs\SAIS_397\lib\site-packages\pytorch_lightning\utilities\parsing.py:210: Attribute 'loss_fn' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss_fn'])`.
+	python ./SAIS/scripts/extract_representations.py --arch vit_small --patch_size 16 --model_type ViT_SelfSupervised_ImageNet --batch_size_per_gpu 2 --data_path ./SAIS/ --data_list 'Custom' --save_type h5 --optical_flow
+	Using cache found in C:\Users\Gamers/.cache\torch\hub\facebookresearch_xcit_main
+	Datasets to Extract Flows From: ['Custom']
+	extract_representations: label IDs to Extract Flows From for Custom: ['Knot_Tying_B002_capture1' 'Knot_Tying_B002_capture2'
+	 'Knot_Tying_B004_capture1' 'Knot_Tying_B004_capture2'
+	 'Knot_Tying_C001_capture1' 'Knot_Tying_C001_capture2'
+	 'Knot_Tying_C003_capture1' 'Knot_Tying_C003_capture2'
+	 'Knot_Tying_C005_capture1' 'Knot_Tying_C005_capture2'
+	 'Knot_Tying_D001_capture1' 'Knot_Tying_D001_capture2'
+	 'Knot_Tying_D004_capture1' 'Knot_Tying_D004_capture2'
+	 'Knot_Tying_E001_capture1' 'Knot_Tying_E001_capture2'
+	 'Knot_Tying_E002_capture1' 'Knot_Tying_E002_capture2'
+	 'Knot_Tying_E004_capture1' 'Knot_Tying_E004_capture2'
+	 'Knot_Tying_E005_capture1' 'Knot_Tying_E005_capture2'
+	 'Knot_Tying_F002_capture1' 'Knot_Tying_F002_capture2'
+	 'Knot_Tying_F003_capture1' 'Knot_Tying_F003_capture2'
+	 'Knot_Tying_F004_capture1' 'Knot_Tying_F004_capture2'
+	 'Knot_Tying_F005_capture1' 'Knot_Tying_F005_capture2'
+	 'Knot_Tying_G001_capture1' 'Knot_Tying_G001_capture2'
+	 'Knot_Tying_G002_capture1' 'Knot_Tying_G002_capture2'
+	 'Knot_Tying_G003_capture1' 'Knot_Tying_G003_capture2'
+	 'Knot_Tying_G005_capture1' 'Knot_Tying_G005_capture2'
+	 'Knot_Tying_H004_capture1' 'Knot_Tying_H004_capture2'
+	 'Knot_Tying_H005_capture1' 'Knot_Tying_H005_capture2'
+	 'Knot_Tying_I002_capture1' 'Knot_Tying_I002_capture2'
+	 'Knot_Tying_I005_capture1' 'Knot_Tying_I005_capture2'
+	 'Needle_Passing_B002_capture1' 'Needle_Passing_B002_capture2'
+	 'Needle_Passing_B004_capture1' 'Needle_Passing_B004_capture2'
+	 'Needle_Passing_C001_capture1' 'Needle_Passing_C001_capture2'
+	 'Needle_Passing_C003_capture1' 'Needle_Passing_C003_capture2'
+	 'Needle_Passing_C005_capture1' 'Needle_Passing_C005_capture2'
+	 'Needle_Passing_D001_capture1' 'Needle_Passing_D001_capture2'
+	 'Needle_Passing_D002_capture1' 'Needle_Passing_D002_capture2'
+	 'Needle_Passing_D004_capture1' 'Needle_Passing_D004_capture2'
+	 'Needle_Passing_D005_capture1' 'Needle_Passing_D005_capture2'
+	 'Needle_Passing_E004_capture1' 'Needle_Passing_E004_capture2'
+	 'Needle_Passing_E005_capture1' 'Needle_Passing_E005_capture2'
+	 'Needle_Passing_F001_capture1' 'Needle_Passing_F001_capture2'
+	 'Needle_Passing_F004_capture1' 'Needle_Passing_F004_capture2'
+	 'Needle_Passing_H002_capture1' 'Needle_Passing_H002_capture2'
+	 'Needle_Passing_H004_capture1' 'Needle_Passing_H004_capture2'
+	 'Needle_Passing_H005_capture1' 'Needle_Passing_H005_capture2'
+	 'Needle_Passing_I002_capture1' 'Needle_Passing_I002_capture2'
+	 'Needle_Passing_I005_capture1' 'Needle_Passing_I005_capture2'
+	 'Suturing_B001_capture1' 'Suturing_B001_capture2'
+	 'Suturing_B004_capture1' 'Suturing_B004_capture2'
+	 'Suturing_C001_capture1' 'Suturing_C001_capture2'
+	 'Suturing_C004_capture1' 'Suturing_C004_capture2'
+	 'Suturing_D001_capture1' 'Suturing_D001_capture2'
+	 'Suturing_D002_capture1' 'Suturing_D002_capture2'
+	 'Suturing_D003_capture1' 'Suturing_D003_capture2'
+	 'Suturing_E002_capture1' 'Suturing_E002_capture2'
+	 'Suturing_E003_capture1' 'Suturing_E003_capture2'
+	 'Suturing_E004_capture1' 'Suturing_E004_capture2'
+	 'Suturing_E005_capture1' 'Suturing_E005_capture2'
+	 'Suturing_F001_capture1' 'Suturing_F001_capture2'
+	 'Suturing_F003_capture1' 'Suturing_F003_capture2'
+	 'Suturing_F004_capture1' 'Suturing_F004_capture2'
+	 'Suturing_F005_capture1' 'Suturing_F005_capture2'
+	 'Suturing_G002_capture1' 'Suturing_G002_capture2'
+	 'Suturing_G005_capture1' 'Suturing_G005_capture2'
+	 'Suturing_H003_capture1' 'Suturing_H003_capture2'
+	 'Suturing_H004_capture1' 'Suturing_H004_capture2'
+	 'Suturing_I001_capture1' 'Suturing_I001_capture2'
+	 'Suturing_I003_capture1' 'Suturing_I003_capture2']
+	Knot_Tying_B002_capture1
+	ERROR: torch_scatter not found. CSV requires torch_scatter library to run. Check instructions at: https://github.com/rusty1s/pytorch_scatter
+	Custom
+	(98, 6)
+	Lets use 1 GPUs!
+	  0%|                                                                                           | 0/49 [00:00<?, ?it/s]0
 
 		Lets use 1 GPUs!
 		100%|████████████████████████████████████████████████████████████████████████████████| 126/126 [00:29<00:00,  4.27it/s]
@@ -450,8 +506,8 @@ python -m torch.distributed.launch --nproc_per_node=1 SAIS/scripts/run_experimen
 			
 		B. Custom domain 
 			python ./SAIS/scripts/run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom_Top15 -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 15 -bc -sa -domains Custom_Top15 -ph train val test -dt reps -e 50 -f 8
-			python ./SAIS/scripts/run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom_Top15  -domains Custom_Top15 -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 15 -bc -sa -ph train val test -dt reps -e 50 -f 8
-	
+			python ./SAIS/scripts/run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom_Top15 -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 15 -bc -sa -domains Custom_Top15 -ph train val test -dt reps -e 50 -f 8
+			
 			Actual run:
 			python ./SAIS/scripts/run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom_Top15 -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 2 -lr 1e-1 -nc 15 -bc -sa -domains Custom_Top15 -ph train val test -dt reps -e 50 -f 8
 			

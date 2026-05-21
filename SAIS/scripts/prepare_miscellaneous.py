@@ -33,9 +33,11 @@ def _is_nan(value):
 
 
 def _compute_auc_with_single_class_support(labels, probs, is_inference_phase, simulate_single_gesture):
+    print(f'ARZ:: In _compute_auc_with_single_class_support ')
     unique_labels = np.unique(labels)
-    if is_inference_phase and len(unique_labels) < 2:
-        if not simulate_single_gesture:
+    print(f'ARZ:: Unique labels: {unique_labels}')
+    if len(unique_labels) < 2:
+        if not (is_inference_phase and simulate_single_gesture):
             _mark_single_class_auc_note()
             return np.nan
 
@@ -56,11 +58,12 @@ def _compute_auc_with_single_class_support(labels, probs, is_inference_phase, si
         labels_aug = np.concatenate((labels, np.array([synthetic_label])))
         probs_aug = np.vstack((probs, synthetic_probs))
 
-        if nclasses == 2:
+        if nclasses >= 2:
             return roc_auc_score(labels_aug, probs_aug[:, -1])
         return roc_auc_score(labels_aug, probs_aug, multi_class='ovr')
-
+    print(f'ARZ:: In _compute_auc_with_single_class_support - labels (first 10): {labels[:10]}, probs (first 10): {probs[:10]}  ')
     if np.ndim(probs) == 1:
+        print(f'ARZ:: In _compute_auc_with_single_class_support - 1D probs probs (first 10): {probs[:10] }  ')
         return roc_auc_score(labels, probs)
     return roc_auc_score(labels, probs, multi_class='ovr')
 
@@ -69,10 +72,7 @@ def calcNCELoss(rank,snip_sequence,labels,videoname,gesture_prototypes,domains):
     p = torch.vstack(list(gesture_prototypes.values())) # nprototypes x D
     norm = torch.norm(p,dim=1).unsqueeze(1).repeat(1,p.shape[1])        
     p_norm = p / norm
-    # if torch.cuda.is_available():
-    #     p_norm = p_norm.to(rank)
-    # else:
-    p_norm = p_norm.to('cpu')
+    p_norm = p_norm.to(snip_sequence.device)
 
     p_labels = list(gesture_prototypes.keys()) # 0, 1, ... , nclasses,
     p_labels = np.repeat(np.expand_dims(np.array(p_labels),0),snip_sequence.shape[0],axis=0) # nbatch x nprototypes
@@ -100,7 +100,7 @@ def calcNCELoss(rank,snip_sequence,labels,videoname,gesture_prototypes,domains):
     #print('In calcCELoss -> Denominators: %s' % dens)
     loss = -torch.mean(torch.log(nums/dens)) # scalar
 
-    print(f'ARZ:: In calcCELoss -> Loss: %s' % loss)
+    # print(f'ARZ:: In calcCELoss -> Loss: %s' % loss)
     return loss
 
 def calcImportanceLoss(output_importances,importances,ipad,labels):
@@ -166,12 +166,13 @@ def calcNCEMetrics(rank,snip_sequence_list,labels_list,videoname_list,gesture_pr
     # print('Prototype representations: %s' % p)
     p_norm = p / norm
     #print('Normalized prototype representations: %s' % p_norm)
-    # if torch.cuda.is_available():
-    #     p_norm = p_norm.to(rank)
-    # else:
-    p_norm = p_norm.to('cpu')
+    if isinstance(snip_sequence_list,tuple):
+        ref_snip_sequence = torch.stack(snip_sequence_list[0])
+    else:
+        ref_snip_sequence = torch.stack(snip_sequence_list)
+    p_norm = p_norm.to(ref_snip_sequence.device)
     p_labels = list(gesture_prototypes.keys())
-   # print('Gesture prototypes: %s' % p_labels)
+    #print(f'ARZ: Gesture prototypes: %s' % p_labels)
 
     def getProbs(snip_sequence,labels,videoname,p_norm,p_labels):
 
@@ -211,7 +212,9 @@ def calcNCEMetrics(rank,snip_sequence_list,labels_list,videoname_list,gesture_pr
         p_labels = np.repeat(np.expand_dims(np.array(p_labels),0),snip_sequence.shape[0],axis=0) # nbatch x nprototypes
         probs, labels = getProbs(snip_sequence,labels,videoname,p_norm,p_labels)
 
-    preds = torch.argmax(probs,1) 
+    probs = probs.cpu().detach()
+    labels = labels.cpu().detach()
+    preds = torch.argmax(probs,1)
     preds = preds.cpu().detach()
     acc = (torch.sum(preds == labels) / preds.shape[0]).item()
 
@@ -224,15 +227,16 @@ def calcNCEMetrics(rank,snip_sequence_list,labels_list,videoname_list,gesture_pr
     prec = precision_score(labels,preds,average='macro', zero_division=0, labels=present_labels)
     rec = recall_score(labels,preds,average='macro', zero_division=0, labels=present_labels)
     nclasses = len(gesture_prototypes)
-    if nclasses == 2:
+    if nclasses >= 2:
         probs = probs[:,-1]
 
-    # print(f'ARZ:: Calculating AUC for phase: {phase_name} with labels: {labels} and probs: {probs}'   )
+    #print(f'ARZ:: Calculating AUC for phase: {phase_name} with labels: {labels} and probs: {probs}'   )
     try:
         auc = _compute_auc_with_single_class_support(labels, probs, is_inference_phase, simulate_single_gesture)
     except:
         auc = np.nan
-    #print(f'ARZ::: In prepare_mischellaneous ==> acc: {acc}, auc: {auc}, prec: {prec}, rec: {rec}')  
+    print(f'ARZ::: In prepare_mischellaneous ==> acc: {acc}, auc: {auc}, prec: {prec}, rec: {rec}')
+
     return acc, auc, prec, rec
 
 
@@ -269,7 +273,7 @@ def calcMetrics(output_logits_list,labels_list,nclasses,phase=None,simulate_sing
         #if nclasses == 2:
         #    output_probs = output_probs[:,-1]
 
-        # print(f'ARZ:: Calculating AUC for phase: {phase_name} with labels: {labels} and probs: {output_probs}'   )
+        print(f'ARZ:: In prepare_miscellaneous ==> Calculating AUC for phase: {phase_name} with labels: {labels} and probs: {output_probs}'   )
         try:
             auc = _compute_auc_with_single_class_support(labels, output_probs, is_inference_phase, simulate_single_gesture)
         except:

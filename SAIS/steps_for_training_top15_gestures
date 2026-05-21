@@ -1,0 +1,76 @@
+Top15_Gestures end-to-end.
+
+I’ll verify whether `extract_representations.py` branches on dataset names and whether `Top15_Gestures` is already handled, then I’ll give a yes/no with the exact file locations.
+
+Searched for regex `Top15_Gestures|Custom_Top15|dataset_name|Custom_Gestures` (`**/SAIS/scripts/**/*.py`), 102 results
+
+Search complete: Check Top15 support
+
+Read [](file:///e%3A/antonio/SAIS/SAIS/scripts/extract_representations.py#1-1), lines 1 to 320
+
+Searched codebase for "extract_representations.py dataset_name Top15_Gestures conditional checks supported datasets", 12 results
+
+Searched for files matching `**/SAIS/scripts/extract_representations.py`, 1 match
+
+Searched for text `Top15_Gestures`, 7 results
+
+Searched for text `dataset_name`, 83 results
+
+Searched for files matching `**/SAIS/scripts/**/*extract*repres*.{py,js,ts,java,go}`, 1 match
+
+Searched for files matching `**/SAIS/loaders/***.{py,js,ts,java,go}`, no matches
+
+Searched codebase for "Top15_Gestures dataset_name supported values extract_representations.py", 13 results
+
+Searched for text `Top15_Gestures` (`**/SAIS/scripts/extract_representations.py`), no results
+
+Searched for text `dataset_name` (`**/SAIS/scripts/extract_representations.py`), 19 results
+
+Searched for files matching `**/SAIS/scripts/extract_representations.py`, 1 match
+
+Searched for text `Top15_Gestures`, 7 results
+
+Searched for regex `Custom_Gestures|NS_Gestures|VUA_Gestures`, 111 results
+
+Searched for text `Custom_Gestures` (`**/SAIS/scripts/extract_representations.py`), no results
+
+Searched for text `Top15_Gestures` (`**/SAIS/scripts/extract_representations.py`), no results
+
+Searched for text `dataset_name` (`**/SAIS/scripts/extract_representations.py`), 19 results
+
+Searched for regex `Top4|Top6|Top15`, 32 results
+
+Searched for text `Custom_Top15`, 17 results
+
+Short answer: no, not for your Top15 training flow.
+
+For training top-15 custom gestures in this repo, you should use dataset name Custom_Gestures plus domain Custom_Top15. That path is already implemented in prepare_dataset.py and the Custom_Top15 filter is already present in prepare_dataset.py.
+
+Why this matters:
+1. run_experiments only accepts specific dataset names, and Top15_Gestures is not one of them. See run_experiments.py.
+2. extract_representations uses internal dataset IDs like Custom, NS, VUA for representation/flow extraction, not task labels like Top15_Gestures. See extract_representations.py.
+
+So:
+1. Use Custom_Gestures in training.
+2. Use domain Custom_Top15 for G1-G15 filtering.
+3. No code change needed in extract_representations.py unless you specifically want to introduce a brand-new dataset identifier Top15_Gestures end-to-end.
+
+Start of training for Custom_top15 (Custom ):
+
+Neither. The correct value is `Custom` exactly as written, and it must stay that way.
+
+extract_representations.py enforces this with a hard assertion on line 501:
+
+```python
+assert dataset_name in ['Custom','NS','VUA','NS_Gronau','VUA_Gronau','RAPN','VUA_COH','VUA_HMH','VUA_Lab','JIGSAWS_Suturing','DVC_UCL']
+```
+
+`Custom_Gestures` and `Custom_Top15` are task-level identifiers used only by run_experiments.py (`-data` / `--dataset_name`). The distinction is:
+
+| Script | Argument | Correct value |
+|---|---|---|
+| extract_representations.py | `--data_list` | `Custom` |
+| run_experiments.py | `-data` / `--dataset_name` | `Custom_Gestures` |
+| run_experiments.py | `-d` / `--domain_name` + `-domains` | `Custom_Top15` |
+
+The command you quoted is already correct as-is — `--data_list 'Custom'` is what it expects.
