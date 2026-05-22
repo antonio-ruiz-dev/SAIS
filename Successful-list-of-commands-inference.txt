@@ -9,6 +9,7 @@
 			python ./SAIS/scripts/video_to_frames.py Knot_Tying_B003_capture1 ./SAIS/images
 
 		option 1 was ran for video Suturing_B004_capture1.mp4
+		
 			This created SAIS/images/Suturing_B004_capture1/
 															|-frames_00000001.jpg
 															|-frames_00000002.jpg
@@ -311,7 +312,7 @@
 		Time taken (s): ...
 		
 		In this script, the H5 file stores feature vectors grouped by label, not raw images and not metadata-heavy records.
-		For the saving logic, see extract_representations.py:352, extract_representations.py:390, and extract_representations.py:408.
+		For the saving logic, see extract_representations.py:352 def extractSegmentations(rank,world_size,dataset_list,args):, extract_representations.py:390, and extract_representations.py:408.
 
 		What it contains:
 
@@ -374,6 +375,9 @@
 		python .\SAIS\scripts\run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 8 -lr 0.1 -nc 15 -bc -sa -domains Gesture -ph Custom_inference -dt reps -e 1 -f 1 --inference --simulate-single-gesture
 		for G1, G2, G3...gestures:
 		python .\SAIS\scripts\run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 8 -lr 0.1 -nc 15 -bc -sa -domains Gesture -ph Custom_inference -dt reps -e 1 -f 1 --inference --simulate-single-gesture
+		
+		Actually ran:
+		python .\SAIS\scripts\run_experiments.py -p ./SAIS/ -data Custom_Gestures -d Custom -m ViT -enc ViT_SelfSupervised_ImageNet -t Prototypes -mod RGB-Flow -dim 384 -bs 8 -lr 0.1 -nc 15 -bc -sa -domains Custom_Top15 -ph Custom_inference -dt reps -e 1 -f 1 --inference --simulate-single-gesture
 		
 		To run inference on the top 15 gestures, I will modify the script to include the necessary parameters for inference and ensure it targets the top 15 gestures. Here's the plan:
 
