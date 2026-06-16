@@ -1,0 +1,50 @@
+I have enough to answer the workflow; I’m doing one last narrow check for any documented JIGSAWS training command or split convention so I don’t give you a half-correct invocation.
+
+Searched for regex `JIGSAWS_Suturing|JIGSAWS_Suturing_Gestures_Classification|Suturing_Gestures_Classification` (`**/SAIS/**/*.md`), no results
+
+Searched for regex `trainModel\(|dataset_name.*JIGSAWS_Suturing_Gestures_Classification|JIGSAWS_Suturing_Gestures_Classification` (`**/SAIS/scripts/**/*.py`), 6 results
+
+Read [](file:///e%3A/antonio/SAIS/SAIS/scripts/prepare_dataset.py#1535-1535), lines 1535 to 1625
+
+I’ve got the core path. One small check left: whether the training loop expects `train/val` or `train/val/test` phase names, so I can give you a command that matches the code rather than the README example.
+
+Searched for text `phases|phase` (`**/SAIS/scripts/train.py`), 21 results
+
+Read [](file:///e%3A/antonio/SAIS/SAIS/scripts/train.py)
+
+If you mean JIGSAWS Suturing gestures, SAIS already has a dedicated training branch. The training entrypoint is run_experiments.py, not main.sh, which is the inference pipeline.
+
+The JIGSAWS loader expects precomputed features and annotations in this layout:
+- `root/JIGSAWS_Suturing/Results/ViT_SelfSupervised_ImageNet_RepsAndLabels.h5`
+- `root/JIGSAWS_Suturing/Results/ViT_SelfSupervised_ImageNet_FlowRepsAndLabels.h5`
+- `root/SurgicalPaths/JIGSAWS_Suturing_gestures_timestamps.csv`
+
+That is wired in prepare_dataset.py and prepare_dataset.py. I did not find that `SurgicalPaths` CSV in this workspace, so training will not run until it exists at the expected path.
+
+A typical training command is:
+
+```powershell
+python -m torch.distributed.launch SAIS/scripts/run_experiments.py `
+  -p e:/antonio/SAIS/SAIS `
+  -data JIGSAWS_Suturing_Gestures_Classification `
+  -d JIGSAWS_Suturing `
+  -m ViT `
+  -enc ViT_SelfSupervised_ImageNet `
+  -t Prototypes `
+  -mod RGB-Flow `
+  -dim 384 `
+  -bs 2 `
+  -lr 1e-1 `
+  -nc 10 `
+  -bc `
+  -sa `
+  -domains Suturing `
+  -ph train val `
+  -dt reps `
+  -e 50 `
+  -f <number_of_unique_subjects>
+```
+
+Use `-f` as the number of unique subjects in your JIGSAWS CSV, because the split is leave-one-subject-out by `Subject` in prepare_dataset.py. The training loop in train.py uses the validation phase for checkpointing, so `train val` is enough for training.
+
+If you want, I can help you map your JIGSAWS files into the exact folder structure this code expects.
