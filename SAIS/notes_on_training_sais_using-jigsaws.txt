@@ -48,3 +48,25 @@ python -m torch.distributed.launch SAIS/scripts/run_experiments.py `
 Use `-f` as the number of unique subjects in your JIGSAWS CSV, because the split is leave-one-subject-out by `Subject` in prepare_dataset.py. The training loop in train.py uses the validation phase for checkpointing, so `train val` is enough for training.
 
 If you want, I can help you map your JIGSAWS files into the exact folder structure this code expects.
+
+
+
+python -m torch.distributed.launch SAIS/scripts/run_experiments.py `
+  -p e:/antonio/SAIS/SAIS `
+  -data JIGSAWS_Suturing_Gestures_Classification `
+  -d JIGSAWS_Suturing `
+  -m ViT `
+  -enc ViT_SelfSupervised_ImageNet `
+  -t Prototypes `
+  -mod RGB-Flow `
+  -dim 384 `
+  -bs 2 `
+  -lr 1e-1 `
+  -nc 10 `
+  -bc `
+  -sa `
+  -domains Suturing `
+  -ph train val `
+  -dt reps `
+  -e 50 `
+  -f <number_of_unique_subjects>
